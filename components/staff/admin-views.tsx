@@ -752,7 +752,7 @@ export function ContentView() {
     <div>
       <StaffPageHeader
         title="Content and rules"
-        subtitle="Copy and Guardian keywords that can change without a deployment."
+        subtitle="Copy and Chatbot keywords that can change without a deployment."
       />
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -782,7 +782,7 @@ export function ContentView() {
         </Card>
 
         <Card className="space-y-3 p-4">
-          <SectionTitle>Guardian rules</SectionTitle>
+          <SectionTitle>Chatbot rules</SectionTitle>
           <p className="text-xs text-muted-foreground text-pretty">
             Toggling a rule here records the intent. The compiled rules in lib/guardian.ts are the
             live behaviour in this build; wiring the toggle to the matcher needs the rules table in

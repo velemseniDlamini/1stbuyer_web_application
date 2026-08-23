@@ -24,8 +24,9 @@ import {
 } from '@/lib/new-cars-source'
 import { isUsableScore } from '@/lib/finance'
 import { formatDate, formatZAR, yearsBetween } from '@/lib/format'
-import { AlertTriangle, Car, ExternalLink, ImageOff } from 'lucide-react'
+import { AlertTriangle, ExternalLink, ImageOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { CarBadge } from '@/components/car-illustration'
 
 const NOT_LISTED = 'Not listed'
 
@@ -215,7 +216,7 @@ export function NewCarsTab() {
       </Card>
 
       {visible.length === 0 ? (
-        <EmptyState icon={<Car className="h-8 w-8" />} title="No new cars match those filters">
+        <EmptyState icon={<CarBadge />} title="No new cars match those filters">
           Raise the price ceiling or clear the brand filter.
         </EmptyState>
       ) : (

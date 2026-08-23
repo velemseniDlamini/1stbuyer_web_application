@@ -15,6 +15,7 @@ import { RivalsTab } from './rivals-tab'
 import { formatNumber, formatZAR } from '@/lib/format'
 import { Heart, MapPin, Fuel, Cog, ExternalLink, Search, SlidersHorizontal, Scale } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { CarBadge } from '@/components/car-illustration'
 
 type Tab = 'cars' | 'new' | 'rivals' | 'dealers'
 
@@ -167,7 +168,7 @@ export function ExploreScreen() {
             )}
 
             {filtered.length === 0 ? (
-              <EmptyState title="No cars match your filters">
+              <EmptyState icon={<CarBadge />} title="No cars match your filters">
                 Try widening your price range or clearing the make filter.
               </EmptyState>
             ) : (

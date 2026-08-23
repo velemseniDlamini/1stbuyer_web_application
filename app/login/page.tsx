@@ -7,6 +7,7 @@ import { Field, inputClass, Notice } from '@/components/ui-kit'
 import { BottomSheet } from '@/components/bottom-sheet'
 import { DEMO_DISCLOSURE, DEMO_PASSWORD, DEMO_PERSONAS, type DemoPersona } from '@/lib/demo-accounts'
 import { StaffGate } from '@/components/staff/staff-gate'
+import { CarIllustration } from '@/components/car-illustration'
 import { validateCredentials } from '@/lib/auth-errors'
 import { ShieldCheck, Scale, Eye, EyeOff, Zap, ArrowRight } from 'lucide-react'
 
@@ -125,6 +126,11 @@ export default function LoginPage() {
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary font-display text-2xl font-bold text-primary-foreground">
             1
           </div>
+          {/* The screen was text on a plain background and could have belonged
+              to any product. The car says what this is before a word is read.
+              An illustration rather than a photograph, so it cannot be mistaken
+              for a listing. */}
+          <CarIllustration className="mx-auto mb-5 max-w-[15rem]" />
           <h1 className="font-display text-3xl font-semibold leading-tight text-balance">
             Your fair advantage in car buying
           </h1>
@@ -260,12 +266,12 @@ export default function LoginPage() {
           {store.authMode === 'supabase' ? (
             <>
               Your account, profile, credit score and document list are stored in a hosted database
-              (Supabase). Questions you ask Guardian are sent to Google to be answered. Everything
+              (Supabase). Questions you ask Chatbot are sent to Google to be answered. Everything
               else stays on this device.
             </>
           ) : (
             <>
-              Your account and data are stored only on this device. Questions you ask Guardian are
+              Your account and data are stored only on this device. Questions you ask Chatbot are
               sent to Google to be answered.
             </>
           )}{' '}

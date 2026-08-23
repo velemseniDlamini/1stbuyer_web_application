@@ -50,7 +50,7 @@ export function SideNav() {
           )}
         >
           <Shield className="h-4 w-4" aria-hidden />
-          Ask Guardian
+          Ask Chatbot
         </Link>
       </div>
     </aside>

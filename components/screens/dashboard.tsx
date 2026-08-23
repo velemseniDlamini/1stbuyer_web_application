@@ -6,21 +6,25 @@ import { useStore } from '@/lib/store'
 import { JOURNEY_STAGES } from '@/lib/journey'
 import { daysSince } from '@/components/compare/compare-panels'
 import { bandForScore, targetRateForScore, estimateBuyingPower, isUsableScore } from '@/lib/finance'
-import { formatDate, formatZAR } from '@/lib/format'
+import { formatDate } from '@/lib/format'
 import { BrandMark } from '@/components/screen-header'
 import { Card, Pill, StatTile, SectionTitle } from '@/components/ui-kit'
 import {
-  Gauge,
-  Scale,
+  BuyingPowerGauge,
+  CreditScoreEmptyGauge,
+  CreditScoreGauge,
+  JourneyRoad,
+} from '@/components/car-gauges'
+import {
+  CarFront,
+  CircleGauge,
+  ShieldCheck,
   Calculator,
   FileSearch,
-  ArrowRight,
   TrendingUp,
   ChevronRight,
   CircleDot,
   Bell,
-  Umbrella,
-  Compass,
 } from 'lucide-react'
 
 const TIPS = [
@@ -84,32 +88,24 @@ export function Dashboard() {
         </h1>
       </div>
 
-      {/* Stats */}
+      {/* The instrument cluster.
+          Presentation only: currentScore, buyingPower and progress are the same
+          values, computed above by exactly the same code as before. These
+          widgets turn them into a speedometer, a fuel gauge and a road, and
+          each one still prints the underlying figure as text. */}
       <div className="mt-4 grid grid-cols-2 gap-3 px-4 lg:grid-cols-4">
         {currentScore ? (
-          <StatTile
-            label="Credit score"
-            value={currentScore}
-            hint={`${bandForScore(currentScore).label} · target ~${targetRateForScore(currentScore).toFixed(2)}%`}
+          <CreditScoreGauge
+            score={currentScore}
+            band={bandForScore(currentScore).label}
+            targetRate={`${targetRateForScore(currentScore).toFixed(2)}%`}
           />
         ) : (
-          <Link href="/credit" className="col-span-1">
-            <div className="flex h-full flex-col justify-between rounded-2xl border border-dashed border-primary/40 bg-primary/10 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-primary-foreground/80">
-                Credit score
-              </p>
-              <p className="mt-1 text-sm font-medium text-foreground text-pretty">
-                Record it to unlock your target rate
-              </p>
-              <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                Start <ArrowRight className="h-3 w-3" />
-              </span>
-            </div>
-          </Link>
+          <CreditScoreEmptyGauge />
         )}
-        <StatTile
-          label="Est. buying power"
-          value={buyingPower > 0 ? formatZAR(buyingPower) : 'Not yet'}
+
+        <BuyingPowerGauge
+          amount={buyingPower}
           /* Without a recorded score there is no band, so the hint must not
              claim one. The figure still helps, but only if the user knows it
              rests on an assumed average rate rather than on their own. */
@@ -121,7 +117,17 @@ export function Dashboard() {
                 : 'Assumes an average rate. Record your score for your own number.'
           }
         />
-        <StatTile label="Journey" value={`${progress}%`} hint={`${doneCount} of ${JOURNEY_STAGES.length} stages`} />
+
+        <JourneyRoad
+          stages={JOURNEY_STAGES.map((stage) => ({
+            id: stage.id,
+            title: stage.title,
+            done: Boolean(journeyDone[stage.id]),
+          }))}
+          doneCount={doneCount}
+          progress={progress}
+        />
+
         <StatTile
           label="Saved cars"
           value={savedVehicleIds.length}
@@ -138,7 +144,7 @@ export function Dashboard() {
             </Link>
           }
         >
-          Your next step
+          Your next step on the road
         </SectionTitle>
         <Link href={nextStage.href}>
           <Card className="overflow-hidden">
@@ -166,11 +172,11 @@ export function Dashboard() {
       <div className="mt-6 px-4">
         <SectionTitle>Tools</SectionTitle>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-          <QuickAction href="/credit" icon={Gauge} label="Credit" desc="Track your score" />
+          <QuickAction href="/credit" icon={CircleGauge} label="Credit" desc="Track your score" />
           <QuickAction href="/finance" icon={Calculator} label="Finance" desc="Model a deal" />
           <QuickAction href="/documents" icon={FileSearch} label="Analyse quote" desc="Spot mark-ups" />
-          <QuickAction href="/insurance" icon={Umbrella} label="Insurance" desc="Compare cover" />
-          <QuickAction href="/explore" icon={Compass} label="Explore" desc="Cars & dealers" />
+          <QuickAction href="/insurance" icon={ShieldCheck} label="Insurance" desc="Compare cover" />
+          <QuickAction href="/explore" icon={CarFront} label="Explore" desc="Find your ride" />
         </div>
       </div>
 
@@ -227,7 +233,7 @@ function RecentComparison() {
       <Link href={`/compare?restore=${latest.id}`}>
         <Card className="flex items-center gap-3 p-4 transition hover:border-primary/40">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
-            <Scale className="h-5 w-5" aria-hidden />
+            <CarFront className="h-5 w-5" aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold">{latest.name}</p>
@@ -332,7 +338,7 @@ function QuickAction({
   desc,
 }: {
   href: string
-  icon: typeof Gauge
+  icon: typeof CircleGauge
   label: string
   desc: string
 }) {
@@ -361,7 +367,7 @@ function RecentActivity() {
     .forEach((d) => items.push({ icon: FileSearch, text: `Added ${d.category} to your pack`, when: d.addedAt! }))
   if (savedVehicleIds.length) {
     items.push({
-      icon: Compass,
+      icon: CarFront,
       text: `${savedVehicleIds.length} car${savedVehicleIds.length > 1 ? 's' : ''} saved in Explore`,
       when: new Date().toISOString(),
     })

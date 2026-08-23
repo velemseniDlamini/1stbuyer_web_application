@@ -62,11 +62,11 @@ export function SupportScreen() {
 
       <div className="space-y-5 px-4">
         <Notice tone="muted">
-          Guardian answers questions about South African car-buying law and finance instantly. Use a
+          Chatbot answers questions about South African car-buying law and finance instantly. Use a
           ticket when something is wrong with the app itself, with your account, or when you need a
           person.{' '}
           <Link href="/chat" className="font-semibold underline">
-            Ask Guardian first
+            Ask Chatbot first
           </Link>
           .
         </Notice>

@@ -46,6 +46,7 @@ import {
   X,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { CarBadge } from '@/components/car-illustration'
 
 /* -------------------------------------------------------- suggestions ----- */
 
@@ -628,7 +629,7 @@ export function HistorySheet({
   return (
     <BottomSheet title="My comparisons" onClose={onClose}>
       {savedComparisons.length === 0 ? (
-        <EmptyState title="No saved comparisons yet">
+        <EmptyState icon={<CarBadge />} title="No saved comparisons yet">
           Save a comparison and it will be listed here, with the date you saved it.
         </EmptyState>
       ) : (

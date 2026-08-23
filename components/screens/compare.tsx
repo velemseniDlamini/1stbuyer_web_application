@@ -54,6 +54,7 @@ import { withVehicleContext } from '@/lib/vehicle-context'
 import { comparedEvent, track } from '@/lib/analytics'
 import { hapticAdd, hapticRemove } from '@/lib/haptics'
 import { formatDate, yearsBetween } from '@/lib/format'
+import { CarBadge } from '@/components/car-illustration'
 import {
   Check,
   Download,
@@ -62,7 +63,6 @@ import {
   Link2,
   Plus,
   Printer,
-  Scale,
   Send,
   Umbrella,
   X,
@@ -293,7 +293,7 @@ export function CompareScreen() {
           }
         />
         <div className="space-y-5 px-4">
-          <EmptyState icon={<Scale className="h-8 w-8" />} title="Nothing to compare yet">
+          <EmptyState icon={<CarBadge />} title="Nothing to compare yet">
             Pick two or three cars in Explore, tap <strong>Compare</strong> on any vehicle card,
             or type what you are weighing up below.
           </EmptyState>
