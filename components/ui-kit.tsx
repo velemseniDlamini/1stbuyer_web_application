@@ -36,6 +36,18 @@ export function Pill({
   )
 }
 
+/**
+ * The surface everything sits on.
+ *
+ * `shadow-soft` is the first step of the elevation scale in globals.css. Cards
+ * used to be flat outlined boxes, which is what made dense screens read as a
+ * wireframe: the border alone separates a card from the page, but it does not
+ * lift it off it. The shadow is warm rather than neutral grey so it does not
+ * dirty the cream background.
+ *
+ * Callers that want more lift pass `shadow-lift`; the class order means a
+ * caller's shadow wins.
+ */
 export function Card({
   children,
   className,
@@ -46,7 +58,12 @@ export function Card({
   as?: any
 }) {
   return (
-    <Tag className={cn('rounded-2xl border border-border bg-card text-card-foreground', className)}>
+    <Tag
+      className={cn(
+        'rounded-2xl border border-border bg-card text-card-foreground shadow-soft',
+        className,
+      )}
+    >
       {children}
     </Tag>
   )
@@ -81,7 +98,7 @@ export function StatTile({
   tone?: Tone
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-4 shadow-soft">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
       <p
         className={cn(
@@ -157,8 +174,8 @@ export function EmptyState({
   children?: ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/50 px-6 py-10 text-center">
-      {icon && <div className="mb-3 text-muted-foreground">{icon}</div>}
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/60 px-6 py-12 text-center">
+      {icon && <div className="mb-4 text-muted-foreground/70">{icon}</div>}
       <p className="font-display text-lg font-semibold">{title}</p>
       {children && <div className="mt-1.5 text-sm text-muted-foreground text-pretty">{children}</div>}
     </div>

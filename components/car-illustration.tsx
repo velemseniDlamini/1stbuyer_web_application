@@ -1,102 +1,153 @@
 import { cn } from '@/lib/utils'
 
 /**
- * A friendly car, drawn rather than photographed.
+ * The hero scene: a car on a road, under a low sun, with the horizon behind it.
  *
- * WHY AN ILLUSTRATION AND NOT A PHOTO
+ * WHY AN ILLUSTRATION AND NOT A PHOTOGRAPH
  *
- * A photograph of a specific car on a sign-in screen or an empty state implies
- * that car is on offer. This app is careful never to imply stock it does not
- * have, and an illustration is unmistakably decorative. It also weighs about
- * two kilobytes, works in both themes without a second asset, and never loads
- * late and shifts the layout.
+ * A photograph of a specific car on a sign-in screen implies that car is on
+ * offer. This app is careful never to imply stock it does not have, and a
+ * drawing is unmistakably decorative. It is also about three kilobytes, needs
+ * no second asset for dark mode, and cannot load late and shift the layout.
  *
- * The shapes are rounded and the stance is upright on purpose: friendly and
- * approachable, not a low-slung sports car. Every colour is a theme token, so
- * it follows the warm cream and orange palette in light mode and the charcoal
- * one in dark without a second copy.
+ * WHAT MAKES IT A HERO RATHER THAN AN ICON
+ *
+ * The first version was a lone car floating on flat beige, which read as a
+ * placeholder. This is a composed scene: a horizon band, a sun, a road that
+ * runs the full width with lane markings and a verge, hills behind, and the
+ * car sitting on the surface with a contact shadow. The composition is what
+ * makes it look intentional.
+ *
+ * Every colour is a theme token, so the warm cream palette in light mode and
+ * the charcoal one in dark both work from a single drawing.
  */
-export function CarIllustration({
-  className,
-  showRoad = true,
-}: {
-  className?: string
-  /** The road underneath. Off for tight spaces like an empty state. */
-  showRoad?: boolean
-}) {
+export function CarIllustration({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 200 108"
+      viewBox="0 0 320 180"
       className={cn('w-full', className)}
       role="img"
-      aria-label="An illustration of a small car"
+      aria-label="An illustration of a car on an open road at sunrise"
     >
-      {showRoad && (
-        <>
-          <rect x="0" y="88" width="200" height="7" rx="3.5" fill="var(--color-muted)" />
-          {/* Road markings, spaced like a real centre line. */}
-          {[10, 46, 82, 118, 154].map((x) => (
-            <rect
-              key={x}
-              x={x}
-              y="90.6"
-              width="18"
-              height="1.8"
-              rx="0.9"
-              fill="var(--color-background)"
-              opacity="0.85"
-            />
-          ))}
-        </>
-      )}
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="var(--color-background)" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.75" />
+          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.25" />
+        </linearGradient>
+        <clipPath id="skyClip">
+          <rect x="0" y="0" width="320" height="126" rx="18" />
+        </clipPath>
+      </defs>
 
-      {/* Body */}
-      <path
-        d="M18 64
-           C18 54 20 50 30 49
-           L58 48
-           C64 30 74 25 96 25
-           L120 25
-           C138 25 148 32 158 44
-           L178 47
-           C186 48 188 54 188 62
-           L188 70
-           C188 74 185 76 181 76
-           L25 76
-           C21 76 18 74 18 70
-           Z"
-        fill="var(--color-primary)"
-      />
+      {/* Sky, clipped so the scene sits in a soft rounded frame rather than a
+          hard rectangle. */}
+      <g clipPath="url(#skyClip)">
+        <rect x="0" y="0" width="320" height="126" fill="url(#sky)" />
+        <circle cx="160" cy="116" r="46" fill="url(#sun)" />
 
-      {/* Glasshouse. One shade darker than the body so it reads as glass
-          without needing a second hue. */}
-      <path
-        d="M65 46 L68 34 C70 30 75 29 82 29 L96 29 L96 46 Z"
-        fill="var(--color-foreground)"
-        opacity="0.22"
-      />
-      <path
-        d="M103 29 L118 29 C130 29 138 33 145 40 L150 46 L103 46 Z"
-        fill="var(--color-foreground)"
-        opacity="0.22"
-      />
+        {/* Hills, two layers for depth. */}
+        <path
+          d="M0 126 L0 100 C34 82 62 96 92 92 C126 87 148 70 186 78 C224 86 252 74 288 84 L320 92 L320 126 Z"
+          fill="var(--color-primary)"
+          opacity="0.18"
+        />
+        <path
+          d="M0 126 L0 112 C40 100 74 110 112 106 C150 102 176 92 216 98 C252 103 286 96 320 104 L320 126 Z"
+          fill="var(--color-primary)"
+          opacity="0.28"
+        />
+      </g>
 
-      {/* Lights: a warm one at the front, a red one at the back. */}
-      <rect x="181" y="55" width="7" height="7" rx="3" fill="var(--color-background)" opacity="0.9" />
-      <rect x="18" y="55" width="6" height="6" rx="3" fill="var(--color-destructive)" opacity="0.8" />
+      {/* Verge, then the road itself running the full width. */}
+      <rect x="0" y="122" width="320" height="8" rx="4" fill="var(--color-primary)" opacity="0.25" />
+      <rect x="0" y="128" width="320" height="34" rx="6" fill="var(--color-road)" />
+      <rect x="0" y="128" width="320" height="2" fill="var(--color-road-edge)" />
+      <rect x="0" y="160" width="320" height="2" fill="var(--color-road-edge)" />
 
-      {/* Door line and handle: two strokes that stop it reading as a blob. */}
-      <path d="M99 30 L99 74" stroke="var(--color-foreground)" strokeWidth="1.4" opacity="0.18" />
-      <rect x="88" y="53" width="9" height="2.6" rx="1.3" fill="var(--color-foreground)" opacity="0.28" />
-
-      {/* Wheels */}
-      {[58, 150].map((cx) => (
-        <g key={cx}>
-          <circle cx={cx} cy="76" r="15" fill="var(--color-foreground)" opacity="0.88" />
-          <circle cx={cx} cy="76" r="6.5" fill="var(--color-card)" />
-          <circle cx={cx} cy="76" r="2.4" fill="var(--color-foreground)" opacity="0.5" />
-        </g>
+      {/* Lane markings, in perspective: longer and further apart toward the
+          viewer, which is what stops them reading as a dashed border. */}
+      {[
+        { x: 8, w: 26 },
+        { x: 52, w: 30 },
+        { x: 102, w: 34 },
+        { x: 160, w: 38 },
+        { x: 224, w: 42 },
+        { x: 292, w: 28 },
+      ].map((dash) => (
+        <rect
+          key={dash.x}
+          x={dash.x}
+          y="143.6"
+          width={dash.w}
+          height="3.4"
+          rx="1.7"
+          fill="var(--color-road-line)"
+          opacity="0.9"
+        />
       ))}
+
+      {/* Contact shadow, so the car sits on the road rather than over it. */}
+      <ellipse cx="160" cy="138" rx="76" ry="7" fill="var(--color-road)" opacity="0.55" />
+
+      {/* Car, three-quarter side view, wheels on the surface. */}
+      <g transform="translate(78 62)">
+        {/* Body */}
+        <path
+          d="M4 56
+             C4 44 6 38 18 36
+             L38 33
+             C48 14 60 6 84 6
+             L110 6
+             C132 6 146 13 158 30
+             L172 35
+             C182 37 186 44 186 54
+             L186 66
+             C186 71 182 74 177 74
+             L13 74
+             C8 74 4 71 4 66
+             Z"
+          fill="var(--color-primary)"
+        />
+        {/* A darker sill along the bottom gives the body some form. */}
+        <path
+          d="M6 64 L184 64 L184 68 C184 72 181 74 177 74 L13 74 C9 74 6 72 6 68 Z"
+          fill="var(--color-foreground)"
+          opacity="0.16"
+        />
+
+        {/* Glass */}
+        <path
+          d="M44 32 L52 18 C56 12 62 10 72 10 L88 10 L88 32 Z"
+          fill="var(--color-foreground)"
+          opacity="0.24"
+        />
+        <path
+          d="M96 10 L110 10 C126 10 136 15 145 27 L149 32 L96 32 Z"
+          fill="var(--color-foreground)"
+          opacity="0.24"
+        />
+
+        {/* Lights */}
+        <rect x="176" y="44" width="11" height="9" rx="4.5" fill="var(--color-background)" opacity="0.95" />
+        <rect x="4" y="44" width="9" height="8" rx="4" fill="var(--color-destructive)" opacity="0.85" />
+
+        {/* Door cut and handle */}
+        <path d="M91 12 L91 64" stroke="var(--color-foreground)" strokeWidth="1.6" opacity="0.16" />
+        <rect x="76" y="43" width="12" height="3.4" rx="1.7" fill="var(--color-foreground)" opacity="0.3" />
+
+        {/* Wheels, with arches so they look set into the body. */}
+        {[46, 146].map((cx) => (
+          <g key={cx}>
+            <circle cx={cx} cy="72" r="20" fill="var(--color-foreground)" opacity="0.9" />
+            <circle cx={cx} cy="72" r="9" fill="var(--color-card)" />
+            <circle cx={cx} cy="72" r="3.4" fill="var(--color-foreground)" opacity="0.45" />
+          </g>
+        ))}
+      </g>
     </svg>
   )
 }
@@ -104,47 +155,54 @@ export function CarIllustration({
 /**
  * The same car at badge size, for empty states.
  *
- * Detail that reads at 200px turns to mud at 48px, so this is a separate,
- * simpler silhouette rather than the illustration above scaled down.
+ * Detail that reads at 300px turns to mud at 48px, so this is a separate,
+ * simpler silhouette rather than the scene above scaled down. It inherits
+ * `currentColor` so a caller can tint it to match its surroundings.
  */
 export function CarBadge({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 48 32"
-      className={cn('h-12 w-12', className)}
+      viewBox="0 0 64 40"
+      className={cn('h-14 w-14', className)}
       role="img"
       aria-label="A small car"
     >
+      {/* A short piece of road, so even the badge is not floating. */}
+      <rect x="2" y="32" width="60" height="4" rx="2" fill="currentColor" opacity="0.18" />
+      <rect x="10" y="33.4" width="10" height="1.4" rx="0.7" fill="currentColor" opacity="0.45" />
+      <rect x="27" y="33.4" width="10" height="1.4" rx="0.7" fill="currentColor" opacity="0.45" />
+      <rect x="44" y="33.4" width="10" height="1.4" rx="0.7" fill="currentColor" opacity="0.45" />
+
       <path
-        d="M4 19
-           C4 15 5 13 9 12.5
-           L14 12
-           C16.5 6 20 4 26 4
-           L31 4
-           C36 4 39 6 42 11
-           L44 12.5
-           C46 13 46.5 15 46.5 18
-           L46.5 21
-           C46.5 22.5 45.5 23 44 23
-           L6 23
-           C4.8 23 4 22.4 4 21
+        d="M6 22
+           C6 18 7 16 11 15.4
+           L17 14.6
+           C19.6 8 23.4 5.6 30 5.6
+           L37 5.6
+           C43 5.6 46.6 7.6 50 13
+           L54 14.6
+           C57 15.2 58 17 58 20
+           L58 25
+           C58 26.6 57 27.4 55.4 27.4
+           L8.6 27.4
+           C7 27.4 6 26.6 6 25
            Z"
         fill="currentColor"
       />
       <path
-        d="M16 11.6 L17.5 7.8 C18.2 6.5 19.6 6 22 6 L24 6 L24 11.6 Z"
+        d="M19.5 14.2 L21.4 9.8 C22.4 7.8 24 7.2 27 7.2 L29.5 7.2 L29.5 14.2 Z"
         fill="var(--color-card)"
-        opacity="0.65"
+        opacity="0.6"
       />
       <path
-        d="M26 6 L30 6 C33.5 6 35.5 7.2 37.5 10 L38.5 11.6 L26 11.6 Z"
+        d="M32 7.2 L36.6 7.2 C41 7.2 43.4 8.6 45.8 12 L47.2 14.2 L32 14.2 Z"
         fill="var(--color-card)"
-        opacity="0.65"
+        opacity="0.6"
       />
-      <circle cx="14" cy="23" r="5" fill="currentColor" />
-      <circle cx="36" cy="23" r="5" fill="currentColor" />
-      <circle cx="14" cy="23" r="2" fill="var(--color-card)" />
-      <circle cx="36" cy="23" r="2" fill="var(--color-card)" />
+      <circle cx="18" cy="27.4" r="5.6" fill="currentColor" />
+      <circle cx="46" cy="27.4" r="5.6" fill="currentColor" />
+      <circle cx="18" cy="27.4" r="2.2" fill="var(--color-card)" />
+      <circle cx="46" cy="27.4" r="2.2" fill="var(--color-card)" />
     </svg>
   )
 }

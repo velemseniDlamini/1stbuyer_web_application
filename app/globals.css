@@ -48,6 +48,17 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.4);
+
+  /* Named so they cannot collide with a colour token. `shadow-card` looked
+     right but --color-card also exists, so Tailwind read it as a shadow
+     COLOUR utility and painted a fully transparent shadow. */
+  --shadow-soft: var(--elevation-card);
+  --shadow-lift: var(--elevation-raised);
+  --shadow-pop: var(--elevation-float);
+
+  --color-road: var(--road);
+  --color-road-line: var(--road-line);
+  --color-road-edge: var(--road-edge);
 }
 
 /* Warm editorial light theme: bone paper, charcoal ink, brass gold accent */
@@ -77,6 +88,20 @@
   --input: oklch(0.86 0.014 78);
   --ring: oklch(0.7 0.11 68);
   --radius: 0.9rem;
+
+  /* Asphalt for the journey road. A dedicated token because the obvious
+     shortcut, foreground at low opacity, inverts in dark mode and paints a
+     white road. */
+  --road: oklch(0.36 0.012 70);
+  --road-line: oklch(0.93 0.02 85);
+  --road-edge: oklch(0.47 0.014 70);
+
+  /* Elevation. Three steps, warm rather than neutral grey, so shadows sit on
+     the cream background instead of dirtying it. Cards were flat boxes; this
+     is what gives them depth without a border change. */
+  --elevation-card: 0 1px 2px oklch(0.35 0.02 70 / 0.05), 0 2px 8px oklch(0.35 0.02 70 / 0.06);
+  --elevation-raised: 0 2px 4px oklch(0.35 0.02 70 / 0.06), 0 8px 20px oklch(0.35 0.02 70 / 0.09);
+  --elevation-float: 0 6px 12px oklch(0.35 0.02 70 / 0.1), 0 18px 40px oklch(0.35 0.02 70 / 0.14);
 }
 
 /* Deep charcoal night theme */
@@ -105,6 +130,16 @@
   --border: oklch(0.32 0.01 64);
   --input: oklch(0.34 0.01 64);
   --ring: oklch(0.78 0.12 74);
+
+  --road: oklch(0.28 0.008 70);
+  --road-line: oklch(0.72 0.02 82);
+  --road-edge: oklch(0.38 0.01 70);
+
+  /* Darker and deeper: on a charcoal ground a light shadow is invisible, so
+     these lean on black and a wider spread rather than on opacity alone. */
+  --elevation-card: 0 1px 2px oklch(0 0 0 / 0.3), 0 2px 8px oklch(0 0 0 / 0.28);
+  --elevation-raised: 0 2px 4px oklch(0 0 0 / 0.34), 0 8px 20px oklch(0 0 0 / 0.36);
+  --elevation-float: 0 6px 12px oklch(0 0 0 / 0.4), 0 18px 40px oklch(0 0 0 / 0.48);
 }
 
 @layer base {

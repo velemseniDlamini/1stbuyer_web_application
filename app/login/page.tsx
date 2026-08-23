@@ -121,17 +121,14 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-dvh flex-col justify-center bg-muted px-5 py-10">
-      <div className="mx-auto w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary font-display text-2xl font-bold text-primary-foreground">
-            1
-          </div>
-          {/* The screen was text on a plain background and could have belonged
-              to any product. The car says what this is before a word is read.
-              An illustration rather than a photograph, so it cannot be mistaken
-              for a listing. */}
-          <CarIllustration className="mx-auto mb-5 max-w-[15rem]" />
-          <h1 className="font-display text-3xl font-semibold leading-tight text-balance">
+      <div className="mx-auto w-full max-w-[26rem]">
+        {/* The screen was text on a plain background and could have belonged to
+            any product. The scene says what this is before a word is read, and
+            it runs the full width of the column so it reads as a hero rather
+            than an icon sitting on empty space. */}
+        <div className="mb-7 text-center">
+          <CarIllustration className="mb-5 w-full" />
+          <h1 className="font-display text-[1.75rem] font-semibold leading-[1.15] text-balance sm:text-3xl">
             Your fair advantage in car buying
           </h1>
           <p className="mt-2 text-sm text-muted-foreground text-pretty">
@@ -139,7 +136,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-lift">
           <div className="mb-5 grid grid-cols-2 rounded-xl bg-muted p-1 text-sm font-medium">
             <button
               type="button"
