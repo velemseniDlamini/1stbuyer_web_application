@@ -7,6 +7,7 @@ import { EMPLOYMENT_STATUSES, BUYING_GOALS } from '@/lib/data'
 import { IncomeField, ProvinceAndCity } from '@/components/profile-fields'
 import { yearsBetween } from '@/lib/format'
 import { Field, inputClass, Notice } from '@/components/ui-kit'
+import { ChevronLeft } from 'lucide-react'
 import { PhoneShell } from '@/components/app-frame'
 
 const EMPTY: Profile = {
@@ -22,12 +23,36 @@ const EMPTY: Profile = {
 }
 
 export default function OnboardingPage() {
-  const { ready, account, profile, saveProfile } = useStore()
+  const { ready, account, profile, saveProfile, signOut } = useStore()
   const router = useRouter()
   const [form, setForm] = useState<Profile>(EMPTY)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [confirmLeave, setConfirmLeave] = useState(false)
+
+  /*
+   * Whether anything has been typed yet.
+   *
+   * Leaving is destructive once there is something to lose, and silently
+   * discarding a half-filled form is the kind of thing that makes people
+   * distrust an app. Untouched, the back button just goes; touched, it asks.
+   */
+  const dirty = (Object.keys(EMPTY) as (keyof Profile)[]).some((key) => form[key] !== EMPTY[key])
+
+  /**
+   * Leaving onboarding means signing out.
+   *
+   * This is not a style choice. The account already exists at this point, and
+   * every route redirects an account-without-a-profile back here: "/" sends
+   * you to onboarding, and "/login" sends you to "/". Navigating away without
+   * ending the session just bounces you straight back, which is exactly the
+   * trap this button exists to open.
+   */
+  function leave() {
+    signOut()
+    router.replace('/login')
+  }
 
   useEffect(() => {
     if (!ready) return
@@ -82,7 +107,17 @@ export default function OnboardingPage() {
   return (
     <PhoneShell>
       <div className="no-scrollbar flex-1 overflow-y-auto">
-        <header className="border-b border-border px-5 py-5">
+        <header className="border-b border-border px-5 pb-5 pt-4">
+          {/* The way out. Without this the screen is a dead end: the account
+              exists, so every other route redirects back here. */}
+          <button
+            type="button"
+            onClick={() => (dirty ? setConfirmLeave(true) : leave())}
+            className="-ml-2 mb-2 flex min-h-11 items-center gap-1 rounded-lg pl-1 pr-3 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden />
+            Back to sign in
+          </button>
           <p className="text-xs font-semibold uppercase tracking-wide text-primary">Step 1 of 1</p>
           <h1 className="mt-1 font-display text-2xl font-semibold text-balance">
             Let&apos;s set up your buyer profile
@@ -92,6 +127,32 @@ export default function OnboardingPage() {
             more.
           </p>
         </header>
+
+        {confirmLeave && (
+          <div className="border-b border-border bg-muted/50 px-5 py-4">
+            <p className="text-sm font-semibold">Leave without saving?</p>
+            <p className="mt-1 text-xs text-muted-foreground text-pretty">
+              Nothing you have entered here has been saved yet, and you will be signed out. Your
+              account itself is not affected, so you can sign back in whenever you like.
+            </p>
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={leave}
+                className="min-h-11 flex-1 rounded-xl border border-border bg-card text-sm font-semibold transition hover:border-destructive/40 hover:text-destructive"
+              >
+                Leave and sign out
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmLeave(false)}
+                className="min-h-11 flex-1 rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+              >
+                Keep filling it in
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={submit} className="space-y-4 px-5 py-5" noValidate>
           <div className="grid grid-cols-2 gap-3">

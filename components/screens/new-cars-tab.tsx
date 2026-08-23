@@ -23,6 +23,7 @@ import {
   type NewCar,
 } from '@/lib/new-cars-source'
 import { isUsableScore } from '@/lib/finance'
+import { DISTANCE_OPTIONS, fuelPriceOptions } from '@/lib/input-choices'
 import { formatDate, formatZAR, yearsBetween } from '@/lib/format'
 import { AlertTriangle, ExternalLink, ImageOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -178,35 +179,43 @@ export function NewCarsTab() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
+          {/* Both of these were number inputs. Neither is a figure anyone
+              knows precisely, and both are asked again on Compare, so they are
+              picked from a list instead of typed twice. */}
           <div>
             <label htmlFor="new-fuel-price" className="block text-xs font-medium">
               Fuel price (R/l)
             </label>
-            <input
+            <select
               id="new-fuel-price"
-              type="number"
-              step="0.50"
-              min={1}
-              max={60}
               value={fuelPrice}
-              onChange={(e) => setFuelPrice(Math.max(1, Number(e.target.value) || 0))}
+              onChange={(e) => setFuelPrice(Number(e.target.value))}
               className={inputClass}
-            />
+            >
+              {fuelPriceOptions(SOURCED_FUEL_PRICE.pricePerLitre).map((price) => (
+                <option key={price} value={price}>
+                  R {price.toFixed(2)}
+                  {price === SOURCED_FUEL_PRICE.pricePerLitre ? ' (sourced)' : ''}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label htmlFor="new-monthly-km" className="block text-xs font-medium">
               Distance (km/month)
             </label>
-            <input
+            <select
               id="new-monthly-km"
-              type="number"
-              step={50}
-              min={50}
-              max={10000}
               value={monthlyKm}
-              onChange={(e) => setMonthlyKm(Math.max(50, Number(e.target.value) || 0))}
+              onChange={(e) => setMonthlyKm(Number(e.target.value))}
               className={inputClass}
-            />
+            >
+              {DISTANCE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <p className="text-[11px] text-muted-foreground text-pretty">

@@ -54,6 +54,7 @@ import { withVehicleContext } from '@/lib/vehicle-context'
 import { comparedEvent, track } from '@/lib/analytics'
 import { hapticAdd, hapticRemove } from '@/lib/haptics'
 import { formatDate, yearsBetween } from '@/lib/format'
+import { DISTANCE_OPTIONS, fuelPriceOptions } from '@/lib/input-choices'
 import { CarBadge } from '@/components/car-illustration'
 import {
   Check,
@@ -67,9 +68,6 @@ import {
   Umbrella,
   X,
 } from 'lucide-react'
-
-const FUEL_PRICE_MAX = 60
-const MONTHLY_KM_MAX = 10000
 
 export function CompareScreen() {
   const store = useStore()
@@ -416,42 +414,44 @@ export function CompareScreen() {
             not a live feed. Insurance is the cheapest indicative comprehensive premium from the
             Insurance screen. Servicing is excluded because we have no sourced price for it.
           </p>
+          {/* Picked, not typed. The same two figures are asked on the
+              brand-new car tab, and neither is something anyone knows to the
+              nearest rand or the nearest fifty kilometres. */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label htmlFor="fuel-price" className="block text-sm font-medium">
-                Fuel price (R/ℓ)
+                Fuel price (R/l)
               </label>
-              <input
+              <select
                 id="fuel-price"
-                type="number"
-                inputMode="decimal"
-                min={1}
-                max={FUEL_PRICE_MAX}
-                step="0.10"
                 value={fuelPrice}
-                onChange={(e) =>
-                  setFuelPrice(Math.min(FUEL_PRICE_MAX, Math.max(1, Number(e.target.value) || 0)))
-                }
+                onChange={(e) => setFuelPrice(Number(e.target.value))}
                 className={inputClass}
-              />
+              >
+                {fuelPriceOptions(DEFAULT_FUEL_PRICE_ZAR_PER_L).map((price) => (
+                  <option key={price} value={price}>
+                    R {price.toFixed(2)}
+                    {price === DEFAULT_FUEL_PRICE_ZAR_PER_L ? ' (assumed)' : ''}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="space-y-1.5">
               <label htmlFor="monthly-km" className="block text-sm font-medium">
                 Distance (km/month)
               </label>
-              <input
+              <select
                 id="monthly-km"
-                type="number"
-                inputMode="numeric"
-                min={50}
-                max={MONTHLY_KM_MAX}
-                step={50}
                 value={monthlyKm}
-                onChange={(e) =>
-                  setMonthlyKm(Math.min(MONTHLY_KM_MAX, Math.max(50, Number(e.target.value) || 0)))
-                }
+                onChange={(e) => setMonthlyKm(Number(e.target.value))}
                 className={inputClass}
-              />
+              >
+                {DISTANCE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </Card>

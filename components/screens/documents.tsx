@@ -9,6 +9,8 @@ import { ACCEPT_ATTR, assessCurrency, packProgress, validateUpload } from '@/lib
 import { analyseQuotation, buildNegotiationPack, BENCHMARKS_UPDATED } from '@/lib/quotation'
 import { PRIME_RATE, targetRateForScore } from '@/lib/finance'
 import { formatDate } from '@/lib/format'
+import { VEHICLES } from '@/lib/data'
+import { OTHER_OPTION, TERM_OPTIONS, termLabel } from '@/lib/input-choices'
 import {
   AlertTriangle,
   Check,
@@ -318,11 +320,39 @@ function AnalysisTab() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saveError, setSaveError] = useState('')
   const [result, setResult] = useState<Quotation | null>(null)
+  /** The catalogue id chosen, or OTHER_OPTION when the car is typed. */
+  const [vehicleChoice, setVehicleChoice] = useState('')
 
   const targetRate = currentScore ? targetRateForScore(currentScore) : null
 
   function set<K extends keyof QuoteForm>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }))
+  }
+
+  /**
+   * Choosing a car names it AND fills in its listed price.
+   *
+   * The price is the figure a user would otherwise copy by hand from the
+   * listing they just came from, which is both tedious and the easiest number
+   * in this form to fat-finger. It stays editable: the quotation in front of
+   * them is what counts, and a dealer's price often differs from the listing.
+   */
+  function chooseVehicle(choice: string) {
+    setVehicleChoice(choice)
+    if (choice === OTHER_OPTION) {
+      set('vehicle', '')
+      return
+    }
+    const picked = VEHICLES.find((v) => v.id === choice)
+    if (!picked) {
+      set('vehicle', '')
+      return
+    }
+    setForm((f) => ({
+      ...f,
+      vehicle: `${picked.year} ${picked.make} ${picked.model} ${picked.variant}`,
+      price: String(picked.price),
+    }))
   }
 
   function num(v: string) {
@@ -420,15 +450,39 @@ function AnalysisTab() {
 
       <Card className="p-4">
         <form onSubmit={analyse} className="space-y-4" noValidate>
-          <Field label="Vehicle" htmlFor="q-vehicle" error={errors.vehicle}>
-            <input
+          <Field
+            label="Vehicle"
+            htmlFor="q-vehicle"
+            error={errors.vehicle}
+            hint="Pick the car and we fill in its listed price for you."
+          >
+            <select
               id="q-vehicle"
               className={inputClass}
-              value={form.vehicle}
-              onChange={(e) => set('vehicle', e.target.value)}
-              placeholder="e.g. VW Polo 1.0 TSI Life (2023)"
-            />
+              value={vehicleChoice}
+              onChange={(e) => chooseVehicle(e.target.value)}
+            >
+              <option value="">Select a vehicle</option>
+              {VEHICLES.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.year} {v.make} {v.model} {v.variant}
+                </option>
+              ))}
+              <option value={OTHER_OPTION}>Another car, let me type it</option>
+            </select>
           </Field>
+
+          {vehicleChoice === OTHER_OPTION && (
+            <Field label="Which car?" htmlFor="q-vehicle-other" error={errors.vehicle}>
+              <input
+                id="q-vehicle-other"
+                className={inputClass}
+                value={form.vehicle}
+                onChange={(e) => set('vehicle', e.target.value)}
+                placeholder="e.g. VW Polo 1.0 TSI Life (2023)"
+              />
+            </Field>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             <NumField
@@ -456,14 +510,21 @@ function AnalysisTab() {
               onChange={(v) => set('interestRate', v)}
               error={errors.interestRate}
             />
-            <NumField
-              id="q-term"
-              label="Term"
-              suffix="mo"
-              value={form.termMonths}
-              onChange={(v) => set('termMonths', v)}
-              error={errors.termMonths}
-            />
+            <Field label="Term" htmlFor="q-term" error={errors.termMonths}>
+              <select
+                id="q-term"
+                className={inputClass}
+                value={form.termMonths}
+                onChange={(e) => set('termMonths', e.target.value)}
+              >
+                <option value="">Select term</option>
+                {TERM_OPTIONS.map((months) => (
+                  <option key={months} value={String(months)}>
+                    {termLabel(months)}
+                  </option>
+                ))}
+              </select>
+            </Field>
             <NumField
               id="q-init"
               label="Initiation fee"
