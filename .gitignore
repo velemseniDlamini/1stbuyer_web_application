@@ -1,0 +1,28 @@
+# v0 sandbox internal files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.snowflake/
+.v0-trash/
+.vercel/
+
+# Environment variables
+.env*.local
+
+# Common ignores
+node_modules
+.next/
+.DS_Store
+
+# Build output and caches
+.tests-build/
+tsconfig.tsbuildinfo
+*.tmp.mjs
+
+
+# Source screenshots for the hero. The app serves public/hero/*.webp, which is
+# the same 12 photographs at 340kB for the set instead of 4.2MB. Keeping the
+# originals out of the repo stops 4MB of unused images being deployed and
+# served publicly. They remain on disk locally; re-optimise from them if the
+# hero art ever changes.
+public/pics/

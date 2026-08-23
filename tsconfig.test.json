@@ -1,0 +1,56 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "target": "es2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": ".tests-build",
+    "rootDir": ".",
+    "types": [
+      "node"
+    ],
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "tests/**/*.ts",
+    "lib/compare.ts",
+    "lib/compare-helpers.ts",
+    "lib/running-cost.ts",
+    "lib/specs.ts",
+    "lib/reliability.ts",
+    "lib/analytics.ts",
+    "lib/vehicle-context.ts",
+    "lib/finance.ts",
+    "lib/guardian.ts",
+    "lib/insurance.ts",
+    "lib/data.ts",
+    "lib/format.ts",
+    "lib/fuzzy.ts",
+    "lib/suggestions.ts",
+    "lib/decision-score.ts",
+    "lib/insights.ts",
+    "lib/market-value.ts",
+    "lib/price-history.ts",
+    "lib/share-token.ts",
+    "lib/validations.ts",
+    "lib/demo-accounts.ts",
+    "lib/rights.ts",
+    "lib/documents.ts",
+    "lib/journey.ts",
+    "lib/store.tsx",
+    "lib/quotation.ts",
+    "lib/support.ts",
+    "lib/staff.ts",
+    "lib/navigation.ts",
+    "lib/new-cars-source.ts",
+    "lib/new-cars.ts",
+    "lib/supabase.ts"
+  ]
+}

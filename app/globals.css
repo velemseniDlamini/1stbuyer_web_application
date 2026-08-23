@@ -1,0 +1,289 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * The desktop shell (sidebar instead of a bottom bar) is gated on height as
+ * well as width. Every current iPhone is 844px or wider in landscape, so a
+ * width-only `md:` rule hands a rotated phone a 240px sidebar next to 375px of
+ * usable height. This variant keeps the phone layout until there is room for
+ * both dimensions.
+ */
+@custom-variant wide (@media (min-width: 48rem) and (min-height: 37.5rem));
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-mono: ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.4);
+}
+
+/* Warm editorial light theme: bone paper, charcoal ink, brass gold accent */
+:root {
+  color-scheme: light;
+  --background: oklch(0.96 0.012 82);
+  --foreground: oklch(0.22 0.012 60);
+  --card: oklch(0.99 0.008 84);
+  --card-foreground: oklch(0.22 0.012 60);
+  --popover: oklch(0.99 0.008 84);
+  --popover-foreground: oklch(0.22 0.012 60);
+  --primary: oklch(0.7 0.11 68);
+  --primary-foreground: oklch(0.2 0.02 60);
+  --secondary: oklch(0.92 0.014 80);
+  --secondary-foreground: oklch(0.3 0.014 60);
+  --muted: oklch(0.93 0.01 80);
+  --muted-foreground: oklch(0.5 0.012 62);
+  --accent: oklch(0.9 0.03 78);
+  --accent-foreground: oklch(0.28 0.02 60);
+  --destructive: oklch(0.52 0.18 25);
+  --destructive-foreground: oklch(0.98 0.01 80);
+  --success: oklch(0.52 0.09 150);
+  --success-foreground: oklch(0.98 0.01 80);
+  --warning: oklch(0.68 0.13 60);
+  --warning-foreground: oklch(0.24 0.02 60);
+  --border: oklch(0.86 0.014 78);
+  --input: oklch(0.86 0.014 78);
+  --ring: oklch(0.7 0.11 68);
+  --radius: 0.9rem;
+}
+
+/* Deep charcoal night theme */
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.19 0.008 60);
+  --foreground: oklch(0.93 0.012 82);
+  --card: oklch(0.23 0.009 62);
+  --card-foreground: oklch(0.93 0.012 82);
+  --popover: oklch(0.23 0.009 62);
+  --popover-foreground: oklch(0.93 0.012 82);
+  --primary: oklch(0.78 0.12 74);
+  --primary-foreground: oklch(0.2 0.02 60);
+  --secondary: oklch(0.28 0.01 62);
+  --secondary-foreground: oklch(0.92 0.012 82);
+  --muted: oklch(0.28 0.01 62);
+  --muted-foreground: oklch(0.68 0.012 74);
+  --accent: oklch(0.33 0.02 68);
+  --accent-foreground: oklch(0.93 0.012 82);
+  --destructive: oklch(0.62 0.19 25);
+  --destructive-foreground: oklch(0.98 0.01 80);
+  --success: oklch(0.7 0.12 152);
+  --success-foreground: oklch(0.18 0.02 60);
+  --warning: oklch(0.78 0.13 72);
+  --warning-foreground: oklch(0.2 0.02 60);
+  --border: oklch(0.32 0.01 64);
+  --input: oklch(0.34 0.01 64);
+  --ring: oklch(0.78 0.12 74);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  .font-display {
+    font-family: var(--font-display);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------- compare --
+   The comparison rail: the browser's own scroll-snap physics give the swipe a
+   native, spring-like settle without importing a gesture library. */
+.compare-rail {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.compare-rail::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No kinetic settle, no smooth scroll, the swipe still works, it just jumps. */
+  .compare-rail {
+    scroll-behavior: auto;
+    scroll-snap-type: none !important;
+  }
+}
+
+/* High contrast: a tint alone is not a signal. Give every comparison cell a
+   real border, and strengthen the material-difference marker into an edge. */
+@media (prefers-contrast: more) {
+  .compare-screen table th,
+  .compare-screen table td {
+    border: 1px solid var(--foreground);
+  }
+  .compare-screen .compare-material {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+    background: transparent !important;
+  }
+  .compare-screen a,
+  .compare-screen button {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* Print / Save as PDF: an ink-friendly comparison a bank consultant or a parent
+   can read on paper. No phone chrome, no sticky anything, and every link's URL
+   printed in full because a printed link is useless otherwise. */
+@media print {
+  @page {
+    margin: 12mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  nav,
+  header button,
+  .print\:hidden {
+    display: none !important;
+  }
+  .compare-screen {
+    padding: 0 !important;
+  }
+  .compare-rail {
+    overflow: visible !important;
+  }
+  .compare-screen table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+  .compare-screen table th,
+  .compare-screen table td {
+    position: static !important;
+    border: 1px solid #999;
+    padding: 6px 8px;
+    color: #000 !important;
+    background: #fff !important;
+    font-size: 10pt;
+    vertical-align: top;
+  }
+  .compare-screen .compare-material {
+    background: #f2f2f2 !important;
+  }
+  .compare-screen a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 8pt;
+    word-break: break-all;
+  }
+}
+
+/* hide scrollbars inside the phone shell for a native feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* --------------------------------------------------------------- iOS ---- */
+/*
+ * Four Safari-on-iPhone behaviours that do not show up in a desktop browser at
+ * a narrow width, so they cannot be caught by resizing a window.
+ */
+
+/*
+ * 1. Safari zooms the whole page when a form control smaller than 16px takes
+ *    focus, and it does not zoom back out. Every text control in this app is
+ *    text-sm (14px), so every tap on a field left the user zoomed in with the
+ *    layout wider than the screen. Controls are lifted to 16px on touch
+ *    pointers only, so the desktop density is unchanged.
+ */
+@media (hover: none) and (pointer: coarse) {
+  input:not([type='range']):not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/*
+ * 2. viewportFit is "cover", so in landscape the notch and the home indicator
+ *    sit over the layout. The shell pads itself out of the way; without this
+ *    the back button on a rotated iPhone lands under the sensor housing.
+ */
+.safe-x {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/*
+ * 3. The app scrolls inside <main>, not the document. Without this, dragging
+ *    past the end rubber-bands the whole page and shows the body behind the
+ *    shell, and a drag started on a sticky header scrolls the URL bar instead.
+ */
+html,
+body {
+  overscroll-behavior: none;
+}
+
+/* 4. Safari paints a grey box over a tapped control before the CSS state runs. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/*
+ * Readable line length on a wide screen.
+ *
+ * The content column is capped at max-w-6xl so a laptop is not left with 216px
+ * of dead space each side. That fixed the layout but handed the text-heavy
+ * screens 130-character lines, which is its own kind of bad: comfortable prose
+ * sits around 45 to 85 characters.
+ *
+ * So the COLUMN fills the screen and the PARAGRAPH does not. This targets
+ * `p.text-pretty`, the marker this app already puts on real prose, so headings,
+ * figures, table cells and short labels are untouched. Anything already
+ * narrower than the cap is unaffected, which is nearly everything on a phone.
+ */
+main p.text-pretty {
+  max-width: 72ch;
+}
