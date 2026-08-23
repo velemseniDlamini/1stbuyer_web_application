@@ -175,26 +175,53 @@ export type AffordabilityVerdict = {
   note: string
 }
 
-// A common lender guideline: vehicle instalment should sit under ~25% of gross
-// monthly income; total debt under ~30%. We assess the instalment share.
+/*
+ * AFFORDABILITY IS ASSESSED AGAINST NET INCOME, AND THAT CHANGED THE NUMBERS.
+ *
+ * The familiar guideline, "keep the instalment under 20 to 25 percent", is
+ * quoted against GROSS pay, because that is what a lender's affordability
+ * assessment starts from. This app asks for NET income instead: it is the
+ * figure a first-time buyer actually knows, and typing a gross number they had
+ * to estimate would poison every calculation downstream.
+ *
+ * Applying gross thresholds to a net figure would have made the app wrong in a
+ * way that always looked plausible. Net pay in South Africa is roughly 72% of
+ * gross once PAYE and UIF come off, so the equivalent bands are scaled by
+ * 1 / 0.72, which is where 28% and 42% come from.
+ *
+ * The wording changed too. The old copy said "lenders may decline over 30%",
+ * which is now doubly wrong: lenders assess gross, and they assess total debt,
+ * not this instalment alone. What this function can honestly say is whether the
+ * instalment leaves room for fuel, insurance and maintenance.
+ */
+export const NET_TO_GROSS_ASSUMPTION = 0.72
+
+/** Instalment as a share of NET pay. See the note above for where these come from. */
+export const AFFORDABILITY_BANDS = {
+  comfortable: 0.28,
+  stretch: 0.42,
+} as const
+
 export function assessAffordability(monthly: number, monthlyIncome: number): AffordabilityVerdict {
   const ratio = monthlyIncome > 0 ? monthly / monthlyIncome : 1
-  if (ratio <= 0.2) {
+  const pct = Math.round(ratio * 100)
+
+  if (ratio <= AFFORDABILITY_BANDS.comfortable) {
     return {
       id: 'comfortable',
       label: 'Comfortable',
       tone: 'success',
       ratio,
-      note: 'Under 20% of your gross income. This fits a healthy budget.',
+      note: `${pct}% of your take-home pay. That leaves room for fuel, insurance and maintenance on top.`,
     }
   }
-  if (ratio <= 0.3) {
+  if (ratio <= AFFORDABILITY_BANDS.stretch) {
     return {
       id: 'stretch',
       label: 'A stretch',
       tone: 'warning',
       ratio,
-      note: 'Between 20-30% of income. Workable, but leaves little slack for fuel, insurance and maintenance.',
+      note: `${pct}% of your take-home pay. Workable, but running costs will use most of what is left.`,
     }
   }
   return {
@@ -202,12 +229,13 @@ export function assessAffordability(monthly: number, monthlyIncome: number): Aff
     label: 'Risky',
     tone: 'destructive',
     ratio,
-    note: 'Over 30% of your gross income. Lenders may decline, and running costs will bite.',
+    note: `${pct}% of your take-home pay, before fuel, insurance and maintenance. A lender assesses your gross income and your other debt, so this is our view of your budget, not a prediction of their decision.`,
   }
 }
 
-// Buying power: the price a buyer could target given income, band-implied rate,
-// a conservative 20% instalment ceiling, a standard deposit and term.
+// Buying power: the price a buyer could target given NET income, the
+// band-implied rate, the comfortable instalment ceiling above, a standard
+// deposit and term.
 export function estimateBuyingPower(params: {
   monthlyIncome: number
   score: number | null
@@ -220,7 +248,7 @@ export function estimateBuyingPower(params: {
   const n = params.termMonths ?? 72
   const depositPct = params.depositPct ?? 10
   const r = rate / 100 / 12
-  const maxInstalment = monthlyIncome * 0.2
+  const maxInstalment = monthlyIncome * AFFORDABILITY_BANDS.comfortable
   // Present value of an annuity gives the financeable amount.
   const financeable = r === 0 ? maxInstalment * n : (maxInstalment * (1 - Math.pow(1 + r, -n))) / r
   // Gross up for the deposit portion.

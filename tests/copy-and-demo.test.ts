@@ -170,13 +170,4 @@ describe('quick sign-in personas', () => {
     }
   })
 
-  it('references only rights modules that exist', async () => {
-    const { RIGHTS_MODULES } = await import('../lib/rights')
-    const known = new Set(RIGHTS_MODULES.map((m) => m.id))
-    for (const persona of DEMO_PERSONAS) {
-      for (const id of persona.build(now).completedRights) {
-        assert.ok(known.has(id), `${persona.id}: ${id}`)
-      }
-    }
-  })
 })

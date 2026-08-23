@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Shield } from 'lucide-react'
+import { Bot, Home } from 'lucide-react'
 import { PRIMARY_TABS } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -12,19 +12,19 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="relative z-20 border-t border-border bg-card/95 backdrop-blur wide:hidden"
+      className="relative z-20 border-t border-border bg-card wide:hidden"
     >
       {/* Raised Guardian action */}
       <div className="pointer-events-none absolute inset-x-0 -top-7 flex justify-center">
         <Link
           href="/chat"
-          aria-label="Ask Guardian"
+          aria-label="Ask Chatbot"
           className={cn(
             'pointer-events-auto flex h-14 w-14 flex-col items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground shadow-lg transition active:scale-95',
             pathname === '/chat' && 'ring-2 ring-ring ring-offset-2 ring-offset-background',
           )}
         >
-          <Shield className="h-6 w-6" aria-hidden />
+          <Bot className="h-6 w-6" aria-hidden />
         </Link>
       </div>
 
@@ -34,7 +34,7 @@ export function BottomNav() {
         ))}
         <li aria-hidden className="flex justify-center">
           <span className="mt-6 text-[10px] font-semibold uppercase tracking-wide text-primary">
-            Guardian
+            Chatbot
           </span>
         </li>
         {PRIMARY_TABS.slice(2).map((t) => (

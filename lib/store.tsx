@@ -44,7 +44,6 @@ import {
 
 const JOURNEY_ORDER: JourneyStageId[] = [
   'know-yourself',
-  'know-rights',
   'know-market',
   'know-deal',
   'find-car',
@@ -147,7 +146,6 @@ type State = {
   savedVehicleIds: string[]
   documents: DocItem[]
   chat: ChatMessage[]
-  completedRights: string[]
   visitedMarket: boolean
   comparedInsurance: boolean
   savedComparisons: SavedComparison[]
@@ -191,7 +189,6 @@ type Store = State & {
    */
   seedServerSlices: (seed: DemoSeed) => Promise<{ ok: boolean; error?: string }>
   signOut: () => void
-  deleteAccount: () => void
   saveProfile: (p: Profile) => Promise<{ ok: boolean; error?: string }>
   updateProfile: (p: Partial<Profile>) => Promise<{ ok: boolean; error?: string }>
   addCredit: (entry: CreditEntry) => Promise<{ ok: boolean; error?: string }>
@@ -202,7 +199,6 @@ type Store = State & {
   setDocument: (id: string, fileName: string | null, docDate?: string) => Promise<{ ok: boolean; error?: string }>
   addChat: (m: ChatMessage) => void
   clearChat: () => void
-  completeRights: (id: string) => void
   markMarketVisited: () => void
   markInsuranceCompared: () => void
   recordComparison: (event: ComparisonEvent) => void
@@ -255,7 +251,6 @@ const INITIAL: State = {
   savedVehicleIds: [],
   documents: DEFAULT_DOCS,
   chat: [],
-  completedRights: [],
   visitedMarket: false,
   comparedInsurance: false,
   savedComparisons: [],
@@ -429,7 +424,6 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
 
     const journeyDone: Record<JourneyStageId, boolean> = {
       'know-yourself': state.credit.length > 0,
-      'know-rights': state.completedRights.length > 0,
       // Stage 3 is satisfied by browsing the market OR by running a real
       // comparison, the latter derived from the event log, not a flag any
       // screen can set on itself.
@@ -550,7 +544,6 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           documents: authMode === 'supabase' ? s.documents : seed.documents,
           savedVehicleIds: seed.savedVehicleIds,
           savedComparisons: seed.savedComparisons,
-          completedRights: seed.completedRights,
           visitedMarket: seed.visitedMarket,
         })),
       authMode,
@@ -664,19 +657,6 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           getSupabase()?.auth.signOut()
         }
         setState((s) => ({ ...s, account: null, profile: null, authUserId: null }))
-      },
-
-      deleteAccount: () => {
-        if (authMode === 'supabase') {
-          // Deleting the auth user needs the service role, which the browser
-          // must never hold. Signing out and clearing the device is what we can
-          // honestly do here; the profile screen says so.
-          getSupabase()?.auth.signOut()
-        }
-        try {
-          localStorage.removeItem(STORAGE_KEY)
-        } catch {}
-        setState({ ...INITIAL, ready: true })
       },
 
       saveProfile: async (p) => {
@@ -797,13 +777,6 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       },
       addChat: (m) => setState((s) => ({ ...s, chat: [...s.chat, m] })),
       clearChat: () => setState((s) => ({ ...s, chat: [] })),
-      completeRights: (id) =>
-        setState((s) => ({
-          ...s,
-          completedRights: s.completedRights.includes(id)
-            ? s.completedRights
-            : [...s.completedRights, id],
-        })),
       markMarketVisited: () => setState((s) => (s.visitedMarket ? s : { ...s, visitedMarket: true })),
       markInsuranceCompared: () =>
         setState((s) => (s.comparedInsurance ? s : { ...s, comparedInsurance: true })),

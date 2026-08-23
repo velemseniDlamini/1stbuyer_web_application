@@ -27,7 +27,11 @@ export function ScreenHeader({
     else router.push(backTo)
   }
   return (
-    <header className="sticky top-0 z-10 border-b border-border bg-background/90 px-4 py-3 backdrop-blur">
+    // z-20 clears the sticky label column inside the Compare table, and the
+    // background is fully opaque: at 90% the content scrolling underneath
+    // ghosted through the header and read as two overlapping elements. A
+    // translucent bar looks good over a photograph and bad over dense text.
+    <header className="sticky top-0 z-20 border-b border-border bg-background px-4 py-3">
       <div className="flex items-center gap-2">
         {back && (
           <button

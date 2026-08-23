@@ -14,7 +14,7 @@
 // the quotation benchmarks. Nothing new is asserted here. If a claim is not in
 // the app, it does not get a citation, and Guardian has to say it does not know.
 
-import { RIGHTS_MODULES } from '../rights'
+import { LEGAL_REFERENCES } from '../legal-references'
 import { CREDIT_BANDS, PRIME_RATE, PRIME_LAST_UPDATED } from '../finance'
 import { BENCHMARKS_UPDATED } from '../quotation'
 import { COVER_TYPES, PREMIUMS_REVIEWED, REFERENCE_VEHICLE_PRICE } from '../insurance'
@@ -52,7 +52,7 @@ export type KnowledgeEntry = {
 
 // Built from the modules the Rights screen already teaches, so Guardian and
 // the screen can never disagree about what the law says.
-const RIGHTS_ENTRIES: KnowledgeEntry[] = RIGHTS_MODULES.map((module) => ({
+const RIGHTS_ENTRIES: KnowledgeEntry[] = LEGAL_REFERENCES.map((module) => ({
   id: `rights.${module.id}`,
   topic: 'rights' as const,
   title: module.title,
@@ -62,7 +62,6 @@ const RIGHTS_ENTRIES: KnowledgeEntry[] = RIGHTS_MODULES.map((module) => ({
   ].filter((w) => w.length > 3),
   body: `${module.summary}\n\nKey points:\n${module.points.map((p) => `- ${p}`).join('\n')}`,
   citationLabel: module.law,
-  href: '/rights',
 }))
 
 /* ------------------------------------------------------ curated topics --- */
@@ -94,7 +93,6 @@ const CURATED: KnowledgeEntry[] = [
       'Under the National Credit Act a lender must run its own affordability assessment before granting credit, so the outcome depends on income, expenses and existing debt, not the score alone.',
     ].join('\n'),
     citationLabel: 'National Credit Act, s80-s83 (affordability assessment)',
-    href: '/rights',
   },
   {
     id: 'finance.balloon',

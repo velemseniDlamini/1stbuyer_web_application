@@ -29,7 +29,6 @@ export type DemoSeed = {
   savedVehicleIds: string[]
   documents: DocItem[]
   savedComparisons: SavedComparison[]
-  completedRights: string[]
   visitedMarket: boolean
 }
 
@@ -103,7 +102,6 @@ export const DEMO_PERSONAS: DemoPersona[] = [
           createdAt: isoDaysAgo(now, 2),
         },
       ],
-      completedRights: ['cpa-used-car'],
       visitedMarket: true,
     }),
   },
@@ -130,7 +128,6 @@ export const DEMO_PERSONAS: DemoPersona[] = [
       savedVehicleIds: [],
       documents: DEFAULT_DOCS,
       savedComparisons: [],
-      completedRights: [],
       visitedMarket: false,
     }),
   },
@@ -147,7 +144,6 @@ export const DEMO_PERSONAS: DemoPersona[] = [
       savedVehicleIds: [],
       documents: DEFAULT_DOCS,
       savedComparisons: [],
-      completedRights: [],
       visitedMarket: false,
     }),
   },

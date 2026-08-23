@@ -129,7 +129,7 @@ const RULES: Rule[] = [
     build: (ctx) => ({
       matched: true,
       title: 'Can you afford this deal?',
-      body: `A common guideline is that your vehicle instalment should stay under about 20-25% of your gross monthly income, with total debt under ~30%.${ctx.monthlyIncome ? ` On your recorded income, keep the instalment under about R${Math.round(ctx.monthlyIncome * 0.2).toLocaleString('en-ZA')} to stay comfortable.` : ''} A lender must run an affordability assessment before granting credit.`,
+      body: `This app works from your take-home pay, and treats an instalment under about 28% of it as comfortable, since running costs come out of the same money.${ctx.monthlyIncome ? ` On your recorded income that is roughly R${Math.round(ctx.monthlyIncome * 0.28).toLocaleString('en-ZA')} a month.` : ''} A lender must run an affordability assessment before granting credit.`,
       citation: 'National Credit Act, s78-81 (affordability assessment).',
       steps: [
         'Add fuel, insurance, tyres and maintenance to the instalment. That is the real monthly cost.',
@@ -252,12 +252,12 @@ const RULES: Rule[] = [
 const RULE_LINKS: Record<string, GuardianLink> = {
   'interest-rate': { label: 'Model this rate', href: '/finance' },
   balloon: { label: 'Model the balloon', href: '/finance' },
-  warranty: { label: 'Know your rights', href: '/rights' },
+  warranty: { label: 'Ask about your rights', href: '/chat' },
   'credit-check': { label: 'Record your score', href: '/credit' },
   affordability: { label: 'Test affordability', href: '/finance' },
   tradein: { label: 'Check the market', href: '/explore' },
   insurance: { label: 'Compare insurance', href: '/insurance' },
-  roadworthy: { label: 'Read the eNaTIS module', href: '/rights' },
+  roadworthy: { label: 'Ask about roadworthy rules', href: '/chat' },
   documents: { label: 'Build your pack', href: '/documents' },
 }
 

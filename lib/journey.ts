@@ -1,6 +1,5 @@
 export type JourneyStageId =
   | 'know-yourself'
-  | 'know-rights'
   | 'know-market'
   | 'know-deal'
   | 'find-car'
@@ -28,17 +27,8 @@ export const JOURNEY_STAGES: JourneyStage[] = [
     unlockedBy: 'Recording a credit score',
   },
   {
-    id: 'know-rights',
-    index: 2,
-    title: 'Know Your Rights',
-    blurb: 'Learn the CPA and NCA protections that apply the moment you sign.',
-    action: 'Complete a rights module',
-    href: '/rights',
-    unlockedBy: 'Completing one rights module',
-  },
-  {
     id: 'know-market',
-    index: 3,
+    index: 2,
     title: 'Know the Market',
     blurb: 'Browse listings, then put two cars side by side on the same questions.',
     action: 'Explore the market',
@@ -47,7 +37,7 @@ export const JOURNEY_STAGES: JourneyStage[] = [
   },
   {
     id: 'know-deal',
-    index: 4,
+    index: 3,
     title: 'Know Your Deal',
     blurb: 'Model instalment, interest, total cost and balloon exposure.',
     action: 'Run the finance calculator',
@@ -56,7 +46,7 @@ export const JOURNEY_STAGES: JourneyStage[] = [
   },
   {
     id: 'find-car',
-    index: 5,
+    index: 4,
     title: 'Find Your Car',
     blurb: 'Save the vehicles you are serious about and compare them.',
     action: 'Save a vehicle',
@@ -65,7 +55,7 @@ export const JOURNEY_STAGES: JourneyStage[] = [
   },
   {
     id: 'seal-deal',
-    index: 6,
+    index: 5,
     title: 'Seal the Deal',
     blurb: 'Analyse a dealer quote line by line and get negotiation points.',
     action: 'Analyse a quotation',
@@ -74,7 +64,7 @@ export const JOURNEY_STAGES: JourneyStage[] = [
   },
   {
     id: 'protect-ride',
-    index: 7,
+    index: 6,
     title: 'Protect Your Ride',
     blurb: 'Compare indicative insurance premiums across six insurers.',
     action: 'Compare insurance',

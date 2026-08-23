@@ -22,7 +22,6 @@ export const PAGE_ROUTES: Record<PageId, string> = {
   documents: '/documents',
   quotation: '/documents',
   insurance: '/insurance',
-  rights: '/rights',
   profile: '/profile',
   support: '/support',
   other: '/',
@@ -41,13 +40,12 @@ export const PAGE_PURPOSE: Record<PageId, string> = {
   documents: 'The finance document pack checklist and the dealer quotation analyser.',
   quotation: 'The quotation analyser: a dealer quote read line by line against reference benchmarks.',
   insurance: 'Indicative insurance comparison across insurers and cover types.',
-  rights: 'Consumer-rights modules on the CPA and NCA, each with a short quiz.',
   profile: 'Account details, saved data and app settings.',
   support: 'Raising a support ticket and reading replies.',
-  other: 'A part of the app Guardian has no specific description for.',
+  other: 'A part of the app the assistant has no specific description for.',
 }
 
-/** The seven stages, rendered for the prompt. Kept short: this ships every request. */
+/** The journey stages, rendered for the prompt. Kept short: this ships every request. */
 export function journeySummary(): string {
   return JOURNEY_STAGES.map(
     (s) => `${s.index}. ${s.title} (${s.id}) at ${s.href}: ${s.blurb} Unlocked by: ${s.unlockedBy.toLowerCase()}.`,
@@ -78,7 +76,7 @@ export const APP_SUMMARY = `1st Buyer is a South African first-time car-buyer co
 
 It is not a dealer, not a lender, not a credit bureau and not an insurer. It sells nothing and earns no commission.
 
-The app is organised as a seven-stage journey:
+The app is organised as a staged journey:
 ${journeySummary()}
 
 Screens the user can be sent to:

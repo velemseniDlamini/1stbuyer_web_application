@@ -7,9 +7,14 @@ import { ScreenHeader } from '@/components/screen-header'
 import { Card, Field, inputClass, Notice, Pill, SectionTitle } from '@/components/ui-kit'
 import { useStore, type Profile } from '@/lib/store'
 import { StaffGate } from '@/components/staff/staff-gate'
-import { PROVINCES, EMPLOYMENT_STATUSES, BUYING_GOALS } from '@/lib/data'
+import { EMPLOYMENT_STATUSES, BUYING_GOALS } from '@/lib/data'
+import {
+  IncomeField,
+  LockedIdentityFields,
+  ProvinceAndCity,
+} from '@/components/profile-fields'
 import { bandForScore, targetRateForScore } from '@/lib/finance'
-import { formatDate, formatZAR, yearsBetween } from '@/lib/format'
+import { formatDate } from '@/lib/format'
 import {
   ChevronDown,
   Download,
@@ -19,9 +24,8 @@ import {
   Moon,
   ShieldCheck,
   Sun,
-  Trash2,
-  Wallet,
 } from 'lucide-react'
+import { AffordabilityAdvice } from '@/components/affordability-advice'
 import { cn } from '@/lib/utils'
 
 export function ProfileScreen() {
@@ -33,13 +37,11 @@ export function ProfileScreen() {
     theme,
     setTheme,
     signOut,
-    deleteAccount,
     exportData,
     systemSettings,
   } = store
   const router = useRouter()
   const [editing, setEditing] = useState(false)
-  const [confirmDelete, setConfirmDelete] = useState(false)
 
   if (!profile || !account) return null
 
@@ -60,11 +62,6 @@ export function ProfileScreen() {
 
   function onSignOut() {
     signOut()
-    router.replace('/login')
-  }
-
-  function onDelete() {
-    deleteAccount()
     router.replace('/login')
   }
 
@@ -91,7 +88,18 @@ export function ProfileScreen() {
           </div>
         </Card>
 
-        {/* Buyer profile tiles */}
+        {/* The point of this screen is advice, not a read-out of what the user
+            already told us. The four tiles that used to sit here restated
+            income, licence years and a buying goal; this answers what those
+            figures mean for what they can afford. */}
+        <div>
+          <SectionTitle>What this means for you</SectionTitle>
+          <AffordabilityAdvice monthlyIncome={profile.monthlyIncome} score={currentScore} />
+        </div>
+
+        {/* Credit score stays as a tile: it is the one figure that gates the
+            rest of the app, so it needs a visible route to the screen that
+            records it. */}
         <div className="grid grid-cols-2 gap-3">
           <Tile
             icon={Gauge}
@@ -103,18 +111,6 @@ export function ProfileScreen() {
                 : 'Record it to unlock your rate'
             }
             href="/credit"
-          />
-          <Tile
-            icon={Wallet}
-            label="Monthly income"
-            value={formatZAR(profile.monthlyIncome)}
-            hint={profile.employment}
-          />
-          <Tile
-            icon={ShieldCheck}
-            label="Licence held"
-            value={`${yearsBetween(profile.licenceDate)} yr`}
-            hint={`Age ${yearsBetween(profile.dob)}`}
           />
           <Tile
             icon={FileText}
@@ -204,45 +200,27 @@ export function ProfileScreen() {
                 </span>
               </span>
             </button>
-            <div className="p-4">
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
-                  <Trash2 className="h-4 w-4" aria-hidden />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold">
-                    {store.authMode === 'supabase' ? 'Clear this device and sign out' : 'Delete my account and data'}
-                  </p>
-                  <p className="text-xs text-muted-foreground text-pretty">
-                    {store.authMode === 'supabase'
-                      ? 'Erases everything held in this browser and signs you out. Your account row in our database is not removed by this button: deleting an auth user needs an administrator, so email us and we will do it and confirm.'
-                      : 'Removes everything from this device immediately. It cannot be undone.'}
-                  </p>
-                </div>
+            {/* Account deletion was removed from the product. The button and its
+                confirmation flow are gone, and store.deleteAccount no longer
+                exists, so there is no code path left that wipes an account
+                from the interface. A buyer who genuinely wants their data
+                removed raises a ticket and a human does it, which also leaves
+                an audit trail. */}
+            <div className="flex items-start gap-3 p-4">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
+                <ShieldCheck className="h-4 w-4" aria-hidden />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold">Closing your account</p>
+                <p className="mt-0.5 text-xs text-muted-foreground text-pretty">
+                  Accounts are closed by our support team rather than from this screen, so your
+                  credit history and finance pack cannot be erased by a mistap.{' '}
+                  <Link href="/support" className="font-semibold underline">
+                    Raise a request
+                  </Link>{' '}
+                  and we will confirm once it is done.
+                </p>
               </div>
-              {confirmDelete ? (
-                <div className="mt-3 flex gap-2">
-                  <button
-                    onClick={onDelete}
-                    className="min-h-11 flex-1 rounded-xl bg-destructive text-sm font-semibold text-destructive-foreground transition hover:opacity-90"
-                  >
-                    Yes, delete everything
-                  </button>
-                  <button
-                    onClick={() => setConfirmDelete(false)}
-                    className="min-h-11 flex-1 rounded-xl border border-border text-sm font-semibold transition hover:border-primary/40"
-                  >
-                    Keep my data
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setConfirmDelete(true)}
-                  className="mt-3 min-h-11 w-full rounded-xl border border-destructive/40 text-sm font-semibold text-destructive transition hover:bg-destructive/10"
-                >
-                  Delete account
-                </button>
-              )}
             </div>
           </Card>
         </div>
@@ -263,8 +241,8 @@ export function ProfileScreen() {
               or shared, and 1st Buyer takes no commission from any dealer, bank or insurer.{' '}
             </>
           )}
-          <Link href="/rights" className="font-semibold underline">
-            Know your rights
+          <Link href="/chat" className="font-semibold underline">
+            Ask Chatbot about your rights
           </Link>
           .
         </Notice>
@@ -332,22 +310,15 @@ function ProfileForm({ onDone }: { onDone: () => void }) {
     setSaved(false)
   }
 
+  // Only the editable fields are validated. Name, date of birth and licence
+  // date are locked, so a rule about them could only ever block a save the
+  // user has no way to fix.
   function validate(): boolean {
     const e: Record<string, string> = {}
-    if (!form.firstName.trim()) e.firstName = 'Required.'
-    if (!form.city.trim()) e.city = 'Required.'
+    if (!form.province) e.province = 'Select your province.'
+    if (!form.city) e.city = 'Select your city or town.'
     if (!form.monthlyIncome || form.monthlyIncome < 1000)
-      e.monthlyIncome = 'Enter your gross monthly income (at least R1 000).'
-    if (!form.dob) e.dob = 'Required.'
-    else {
-      const age = yearsBetween(form.dob)
-      if (age < 18) e.dob = 'You must be at least 18 to finance a vehicle.'
-      if (age > 100) e.dob = 'Please check this date.'
-    }
-    if (!form.licenceDate) e.licenceDate = 'Required.'
-    else if (new Date(form.licenceDate) > new Date()) e.licenceDate = 'Cannot be in the future.'
-    else if (form.dob && new Date(form.licenceDate) < new Date(form.dob))
-      e.licenceDate = 'A licence cannot pre-date your birth.'
+      e.monthlyIncome = 'Enter your net monthly income (at least R1 000).'
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -370,46 +341,20 @@ function ProfileForm({ onDone }: { onDone: () => void }) {
 
   return (
     <form onSubmit={submit} className="space-y-4 border-t border-border p-4" noValidate>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="First name" htmlFor="p-first" error={errors.firstName}>
-          <input
-            id="p-first"
-            className={inputClass}
-            value={form.firstName}
-            onChange={(e) => set('firstName', e.target.value)}
-          />
-        </Field>
-        <Field label="Last name" htmlFor="p-last">
-          <input
-            id="p-last"
-            className={inputClass}
-            value={form.lastName}
-            onChange={(e) => set('lastName', e.target.value)}
-          />
-        </Field>
-        <Field label="City / town" htmlFor="p-city" error={errors.city}>
-          <input
-            id="p-city"
-            className={inputClass}
-            value={form.city}
-            onChange={(e) => set('city', e.target.value)}
-          />
-        </Field>
-        <Field label="Province" htmlFor="p-province">
-          <select
-            id="p-province"
-            className={inputClass}
-            value={form.province}
-            onChange={(e) => set('province', e.target.value)}
-          >
-            {PROVINCES.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </Field>
-      </div>
+      <LockedIdentityFields
+        firstName={form.firstName}
+        lastName={form.lastName}
+        dob={form.dob}
+        licenceDate={form.licenceDate}
+      />
+
+      <ProvinceAndCity
+        province={form.province}
+        city={form.city}
+        onProvince={(v) => set('province', v)}
+        onCity={(v) => set('city', v)}
+        errors={{ province: errors.province, city: errors.city }}
+      />
 
       <Field label="Employment status" htmlFor="p-employment">
         <select
@@ -426,48 +371,11 @@ function ProfileForm({ onDone }: { onDone: () => void }) {
         </select>
       </Field>
 
-      <Field
-        label="Gross monthly income"
-        htmlFor="p-income"
+      <IncomeField
+        value={form.monthlyIncome}
+        onChange={(v) => set('monthlyIncome', v)}
         error={errors.monthlyIncome}
-        hint="Before deductions. Drives affordability and buying power."
-      >
-        <div className="relative">
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-            R
-          </span>
-          <input
-            id="p-income"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            className={`${inputClass} pl-7`}
-            value={form.monthlyIncome || ''}
-            onChange={(e) => set('monthlyIncome', Number(e.target.value))}
-          />
-        </div>
-      </Field>
-
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Date of birth" htmlFor="p-dob" error={errors.dob}>
-          <input
-            id="p-dob"
-            type="date"
-            className={inputClass}
-            value={form.dob}
-            onChange={(e) => set('dob', e.target.value)}
-          />
-        </Field>
-        <Field label="Licence issued" htmlFor="p-licence" error={errors.licenceDate}>
-          <input
-            id="p-licence"
-            type="date"
-            className={inputClass}
-            value={form.licenceDate}
-            onChange={(e) => set('licenceDate', e.target.value)}
-          />
-        </Field>
-      </div>
+      />
 
       <Field label="What are you buying for?" htmlFor="p-goal">
         <select

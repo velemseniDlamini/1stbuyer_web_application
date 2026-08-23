@@ -26,7 +26,6 @@ export function pageIdFor(pathname: string, exploreTab?: string): PageId {
   if (path.startsWith('/finance')) return 'finance'
   if (path.startsWith('/documents')) return 'documents'
   if (path.startsWith('/insurance')) return 'insurance'
-  if (path.startsWith('/rights')) return 'rights'
   if (path.startsWith('/profile')) return 'profile'
   if (path.startsWith('/support')) return 'support'
   return 'other'
@@ -105,12 +104,6 @@ const BY_PAGE: Record<PageId, string[]> = {
     'What does the excess mean?',
     'What cover does a financed car need?',
     'What should I compare between insurers?',
-  ],
-  rights: [
-    'What are my rights if the car breaks down?',
-    'Does voetstoots mean I have no comeback?',
-    'What is reckless credit?',
-    'Who do I complain to about a dealer?',
   ],
   profile: [
     'What does this app do with my data?',

@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, lazy, useState } from 'react'
-import { Shield } from 'lucide-react'
+import { Bot } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Loaded only when the user first opens Guardian. Every screen in the app
@@ -37,7 +37,7 @@ export function GuardianLauncher() {
         onClick={() => setPanel((p) => (p === 'open' ? 'closed' : 'open'))}
         aria-expanded={open}
         aria-haspopup="dialog"
-        aria-label={open ? 'Hide Guardian' : 'Ask Guardian, your car-buying assistant'}
+        aria-label={open ? 'Hide Chatbot' : 'Ask Chatbot, your car-buying assistant'}
         className={cn(
           'group fixed z-40 flex items-center gap-2 rounded-full border border-primary/25 bg-primary py-3 pl-3.5 pr-4 text-primary-foreground shadow-lg outline-none',
           'transition hover:shadow-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95',
@@ -54,7 +54,7 @@ export function GuardianLauncher() {
         )}
       >
         <span className="relative flex h-6 w-6 items-center justify-center">
-          <Shield className="h-5 w-5" aria-hidden />
+          <Bot className="h-5 w-5" aria-hidden />
           {/* A quiet, one-off pulse. It draws the eye without becoming a
               blinking notification badge the user has to dismiss. */}
           <span
@@ -62,7 +62,7 @@ export function GuardianLauncher() {
             className="absolute inset-0 rounded-full bg-primary-foreground/30 motion-safe:animate-ping motion-safe:[animation-iteration-count:3]"
           />
         </span>
-        <span className="text-sm font-semibold">Guardian</span>
+        <span className="text-sm font-semibold">Chatbot</span>
       </button>
 
       {panel !== 'never' && (

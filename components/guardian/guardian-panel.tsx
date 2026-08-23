@@ -8,7 +8,7 @@ import {
   RotateCcw,
   ScrollText,
   Send,
-  Shield,
+  Bot,
   X,
 } from 'lucide-react'
 import { askGuardianApi } from '@/lib/guardian/client'
@@ -143,7 +143,7 @@ export function GuardianPanel({
       ref={panelRef}
       role="dialog"
       aria-modal="false"
-      aria-label="Guardian, your car-buying assistant"
+      aria-label="Chatbot, your car-buying assistant"
       className={cn(
         'fixed z-50 flex flex-col overflow-hidden border border-border bg-card shadow-2xl',
         // Phone: a sheet anchored to the bottom, clear of the bottom bar and
@@ -159,7 +159,7 @@ export function GuardianPanel({
       {/* Header */}
       <header className="flex shrink-0 items-center gap-2.5 border-b border-border bg-card px-3.5 py-3">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <Shield className="h-4.5 w-4.5" aria-hidden />
+          <Bot className="h-4.5 w-4.5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-display text-sm font-semibold leading-tight">
@@ -183,7 +183,7 @@ export function GuardianPanel({
         <button
           type="button"
           onClick={onMinimise}
-          aria-label="Minimise Guardian"
+          aria-label="Minimise Chatbot"
           title="Minimise"
           className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
         >
@@ -192,7 +192,7 @@ export function GuardianPanel({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close Guardian"
+          aria-label="Close Chatbot"
           title="Close"
           className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
         >
@@ -204,7 +204,7 @@ export function GuardianPanel({
       <div
         role="log"
         aria-live="polite"
-        aria-label="Conversation with Guardian"
+        aria-label="Conversation with Chatbot"
         className="no-scrollbar flex-1 space-y-3 overflow-y-auto overscroll-contain px-3.5 py-3.5"
       >
         {turns.length === 0 ? (
@@ -222,10 +222,10 @@ export function GuardianPanel({
         {busy && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary">
-              <Shield className="h-3.5 w-3.5" aria-hidden />
+              <Bot className="h-3.5 w-3.5" aria-hidden />
             </span>
             <span className="flex items-center gap-1">
-              Guardian is thinking
+              Chatbot is thinking
               <Dots />
             </span>
           </div>
@@ -320,7 +320,7 @@ function Bubble({ turn }: { turn: Turn }) {
   return (
     <div className="flex gap-2">
       <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary text-foreground">
-        <Shield className="h-3.5 w-3.5" aria-hidden />
+        <Bot className="h-3.5 w-3.5" aria-hidden />
       </span>
       <div className="min-w-0 max-w-[88%] space-y-2 rounded-2xl rounded-tl-md border border-border bg-background px-3.5 py-2.5">
         <GuardianRichText text={turn.text} />

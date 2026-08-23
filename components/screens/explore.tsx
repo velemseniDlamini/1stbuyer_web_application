@@ -273,7 +273,7 @@ export function ExploreScreen() {
             )}
 
             {compareIds.length > 0 && (
-              <div className="sticky bottom-2 z-10 flex items-center gap-2 rounded-2xl border border-border bg-card/95 p-3 shadow-lg backdrop-blur">
+              <div className="sticky bottom-2 z-10 flex items-center gap-2 rounded-2xl border border-border bg-card p-3 shadow-lg">
                 <p className="flex-1 text-sm font-semibold">
                   {compareIds.length} car{compareIds.length === 1 ? '' : 's'} to compare
                 </p>
@@ -384,7 +384,7 @@ function DealersTab() {
       })}
 
       {selected.length > 0 && (
-        <div className="sticky bottom-2 z-10 flex items-center gap-2 rounded-2xl border border-border bg-card/95 p-3 shadow-lg backdrop-blur">
+        <div className="sticky bottom-2 z-10 flex items-center gap-2 rounded-2xl border border-border bg-card p-3 shadow-lg">
           <p className="flex-1 text-sm font-semibold">
             {selected.length} branch{selected.length === 1 ? '' : 'es'} selected
           </p>

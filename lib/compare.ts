@@ -177,7 +177,7 @@ export const COMPARE_ATTRIBUTES: CompareAttribute[] = [
     id: 'affordability',
     label: 'Affordability',
     section: 'Your numbers',
-    hint: 'Instalment against your gross monthly income',
+    hint: 'Instalment against your net monthly income',
   },
   {
     id: 'runningCost',
@@ -306,7 +306,7 @@ export function buildCarComparison(vehicle: Vehicle, ctx: CompareContext): CarCo
             kind: 'badge',
             display: affordability.label,
             tone: affordability.tone,
-            note: `${Math.round(affordability.ratio * 100)}% of your gross income`,
+            note: `${Math.round(affordability.ratio * 100)}% of your take-home pay`,
           }
         : missingCell('Add your monthly income in Profile'),
 

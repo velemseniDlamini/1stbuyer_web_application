@@ -171,7 +171,6 @@ export function Dashboard() {
           <QuickAction href="/documents" icon={FileSearch} label="Analyse quote" desc="Spot mark-ups" />
           <QuickAction href="/insurance" icon={Umbrella} label="Insurance" desc="Compare cover" />
           <QuickAction href="/explore" icon={Compass} label="Explore" desc="Cars & dealers" />
-          <QuickAction href="/rights" icon={Scale} label="Know your rights" desc="CPA & NCA" />
         </div>
       </div>
 
@@ -189,8 +188,10 @@ export function Dashboard() {
         </Card>
       </div>
 
-      {/* Activity */}
-      <div className="mt-6 px-4 pb-2">
+      {/* Activity is hidden on phones. It is a look-back, and on a small screen
+          it pushed the things a buyer came to do below the fold. Hidden with a
+          breakpoint rather than removed, so tablet and desktop keep it. */}
+      <div className="mt-6 hidden px-4 pb-2 md:block">
         <SectionTitle>Recent activity</SectionTitle>
         <RecentActivity />
       </div>
@@ -351,7 +352,7 @@ function QuickAction({
 }
 
 function RecentActivity() {
-  const { credit, scenarios, quotations, completedRights, documents, savedVehicleIds } = useStore()
+  const { credit, scenarios, quotations, documents, savedVehicleIds } = useStore()
 
   const items: { icon: typeof TrendingUp; text: string; when: string }[] = []
   documents
@@ -373,9 +374,6 @@ function RecentActivity() {
   )
   quotations.slice(0, 2).forEach((q) =>
     items.push({ icon: FileSearch, text: `Analysed a quote (${q.score}/100)`, when: q.createdAt }),
-  )
-  completedRights.slice(-1).forEach(() =>
-    items.push({ icon: Scale, text: `Completed a rights module`, when: new Date().toISOString() }),
   )
 
   items.sort((a, b) => new Date(b.when).getTime() - new Date(a.when).getTime())

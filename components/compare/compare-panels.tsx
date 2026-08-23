@@ -574,7 +574,11 @@ export function GlanceBar({
         <div
           role="status"
           aria-live="polite"
-          className="sticky top-14 z-20 -mx-1 mb-3 flex items-center gap-2 rounded-2xl border border-border bg-card/95 p-2.5 shadow-lg backdrop-blur print:hidden"
+          // top-[4.5rem] clears the sticky screen header, which is 69px tall.
+          // At top-14 (56px) this bar slid 13px underneath it every time it
+          // appeared. Opaque for the same reason the header is: at 95% the
+          // header's own text ghosted through this one.
+          className="sticky top-[4.5rem] z-10 -mx-1 mb-3 flex items-center gap-2 rounded-2xl border border-border bg-card p-2.5 shadow-lg print:hidden"
         >
           <ul className="compare-rail flex flex-1 gap-3 overflow-x-auto">
             {comparisons.map((c) => (

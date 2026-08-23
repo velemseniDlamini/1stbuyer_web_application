@@ -189,7 +189,7 @@ export function LookupView() {
               revealed ? (
                 <div className="space-y-2">
                   <Pill tone="warning">Sensitive data revealed, logged</Pill>
-                  <Row label="Gross monthly income" value={`R ${match!.profile.monthlyIncome.toLocaleString('en-ZA')}`} />
+                  <Row label="Net monthly income" value={`R ${match!.profile.monthlyIncome.toLocaleString('en-ZA')}`} />
                   <Row
                     label="Credit band"
                     value={credit.length ? `${credit[credit.length - 1].bureau}, band only` : 'None recorded'}

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { ScreenHeader } from '@/components/screen-header'
-import { Card, Field, inputClass, Notice, Pill, SectionTitle, StatTile } from '@/components/ui-kit'
+import { Card, Field, Notice, Pill, SectionTitle, StatTile } from '@/components/ui-kit'
 import { useStore } from '@/lib/store'
 import {
   assessAffordability,
@@ -14,6 +14,8 @@ import {
 } from '@/lib/finance'
 import { formatDate, formatZAR } from '@/lib/format'
 import { Trash2 } from 'lucide-react'
+import { VEHICLES } from '@/lib/data'
+import { cn } from '@/lib/utils'
 
 function Slider({
   id,
@@ -53,8 +55,26 @@ function Slider({
   )
 }
 
+/** The slider's range. Wide enough for the catalogue, bounded so a mis-drag
+ *  cannot produce a number nobody in this market would finance. */
+const PRICE_MIN = 50_000
+const PRICE_MAX = 800_000
+
 export function FinanceScreen() {
-  const { profile, currentScore, scenarios, saveScenario, removeScenario } = useStore()
+  const { profile, currentScore, scenarios, saveScenario, removeScenario, savedVehicleIds } =
+    useStore()
+
+  // Cars the user has actually saved come first, then a spread across the
+  // catalogue, so the chips are useful rather than arbitrary.
+  const priceOptions = useMemo(() => {
+    const saved = VEHICLES.filter((v) => savedVehicleIds.includes(v.id))
+    const rest = VEHICLES.filter((v) => !savedVehicleIds.includes(v.id))
+    return [...saved, ...rest].slice(0, 6).map((v) => ({
+      id: v.id,
+      label: `${v.make} ${v.model}`,
+      price: v.price,
+    }))
+  }, [savedVehicleIds])
 
   const suggestedRate = currentScore
     ? Number(targetRateForScore(currentScore).toFixed(2))
@@ -116,17 +136,71 @@ export function FinanceScreen() {
         </Notice>
 
         <Card className="space-y-5 p-4">
-          <Field label="Vehicle price" htmlFor="price">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">R</span>
+          {/* Price was a bare number field, which meant typing six digits on a
+              phone and one stray zero producing a R3 million estimate that
+              still looked plausible. It is now a slider with the exact figure
+              alongside, and it can be filled straight from a car in the
+              catalogue rather than transcribed by hand. */}
+          <Field
+            label="Vehicle price"
+            htmlFor="price"
+            hint="Pick a car below to fill this in, or set it yourself."
+          >
+            <div className="space-y-2">
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="font-display text-2xl font-semibold tabular-nums">
+                  {formatZAR(input.price)}
+                </span>
+                <div className="relative">
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                    R
+                  </span>
+                  <input
+                    id="price"
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    aria-label="Vehicle price, exact amount"
+                    value={input.price || ''}
+                    onChange={(e) => set('price', Number(e.target.value))}
+                    className="h-9 w-32 rounded-lg border border-input bg-background pl-6 pr-2 text-sm tabular-nums outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  />
+                </div>
+              </div>
               <input
-                id="price"
-                type="number"
-                min={0}
-                value={input.price}
+                type="range"
+                min={PRICE_MIN}
+                max={PRICE_MAX}
+                step={5000}
+                value={Math.min(Math.max(input.price || PRICE_MIN, PRICE_MIN), PRICE_MAX)}
                 onChange={(e) => set('price', Number(e.target.value))}
-                className={inputClass}
+                aria-label="Vehicle price"
+                aria-valuetext={formatZAR(input.price)}
+                className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted accent-primary"
               />
+              <div className="flex justify-between text-[11px] text-muted-foreground">
+                <span>{formatZAR(PRICE_MIN)}</span>
+                <span>{formatZAR(PRICE_MAX)}+</span>
+              </div>
+
+              <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pt-1">
+                {priceOptions.map((car) => (
+                  <button
+                    key={car.id}
+                    type="button"
+                    onClick={() => set('price', car.price)}
+                    aria-pressed={input.price === car.price}
+                    className={cn(
+                      'min-h-9 shrink-0 rounded-full border px-3 text-xs font-medium transition',
+                      input.price === car.price
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border bg-card text-muted-foreground hover:border-primary/40',
+                    )}
+                  >
+                    {car.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </Field>
 

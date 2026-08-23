@@ -283,3 +283,45 @@ export const CREDIT_BUREAUS = [
   { id: 'experian', name: 'Experian', url: 'https://www.experian.co.za' },
   { id: 'xds', name: 'XDS', url: 'https://www.xds.co.za' },
 ]
+
+/**
+ * Cities and towns offered per province.
+ *
+ * Free text here was a small disaster for data quality: "Jhb", "joburg",
+ * "Johannesburg " and "Johanesburg" are four different values to any query that
+ * groups by city, and a buyer typing on a phone should not be doing data entry
+ * at all. This is not an exhaustive gazetteer, it is the places most first-time
+ * buyers actually live, plus an "Other" escape so nobody is locked out.
+ */
+export const CITIES_BY_PROVINCE: Record<string, string[]> = {
+  'Eastern Cape': ['Gqeberha (Port Elizabeth)', 'East London', 'Mthatha', 'Queenstown', 'Uitenhage'],
+  'Free State': ['Bloemfontein', 'Welkom', 'Bethlehem', 'Sasolburg', 'Kroonstad'],
+  Gauteng: [
+    'Johannesburg',
+    'Pretoria',
+    'Centurion',
+    'Soweto',
+    'Sandton',
+    'Roodepoort',
+    'Benoni',
+    'Boksburg',
+    'Kempton Park',
+    'Vereeniging',
+    'Krugersdorp',
+    'Midrand',
+  ],
+  'KwaZulu-Natal': ['Durban', 'Pietermaritzburg', 'Umhlanga', 'Newcastle', 'Richards Bay', 'Ladysmith'],
+  Limpopo: ['Polokwane', 'Tzaneen', 'Mokopane', 'Thohoyandou', 'Lephalale'],
+  Mpumalanga: ['Mbombela (Nelspruit)', 'Witbank (eMalahleni)', 'Secunda', 'Middelburg', 'Ermelo'],
+  'Northern Cape': ['Kimberley', 'Upington', 'Springbok', 'De Aar', 'Kuruman'],
+  'North West': ['Rustenburg', 'Potchefstroom', 'Klerksdorp', 'Mahikeng', 'Brits'],
+  'Western Cape': ['Cape Town', 'Stellenbosch', 'Paarl', 'George', 'Worcester', 'Somerset West'],
+}
+
+/** Offered at the end of every city list, so an unlisted town is still usable. */
+export const OTHER_CITY = 'Other'
+
+export function citiesFor(province: string): string[] {
+  const cities = CITIES_BY_PROVINCE[province]
+  return cities ? [...cities, OTHER_CITY] : []
+}

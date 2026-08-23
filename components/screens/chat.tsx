@@ -7,7 +7,7 @@ import { askGuardianApi } from '@/lib/guardian/client'
 import { useGuardianContext } from '@/lib/guardian/use-guardian-context'
 import { LIMITS, type WireMessage } from '@/lib/guardian/protocol'
 import Link from 'next/link'
-import { Shield, Send, ScrollText, Trash2, AlertTriangle, ArrowRight } from 'lucide-react'
+import { Bot, Send, ScrollText, Trash2, AlertTriangle, ArrowRight } from 'lucide-react'
 import { GuardianRichText } from '@/components/guardian/rich-text'
 
 /**
@@ -83,7 +83,7 @@ export function ChatScreen() {
   return (
     <div className="flex h-full flex-col">
       <ScreenHeader
-        title="Guardian"
+        title="Chatbot"
         subtitle="Your consumer-rights co-pilot"
         right={
           chat.length > 0 ? (
@@ -101,13 +101,13 @@ export function ChatScreen() {
       <div
         role="log"
         aria-live="polite"
-        aria-label="Conversation with Guardian"
+        aria-label="Conversation with Chatbot"
         className="no-scrollbar flex-1 space-y-4 overflow-y-auto px-4 py-4"
       >
         {chat.length === 0 ? (
           <div className="flex flex-col items-center pt-6 text-center">
             <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-              <Shield className="h-7 w-7" />
+              <Bot className="h-7 w-7" />
             </span>
             <h2 className="mt-4 font-display text-lg font-semibold">
               Ask me anything about your deal
@@ -124,9 +124,9 @@ export function ChatScreen() {
         {busy && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary">
-              <Shield className="h-4 w-4" aria-hidden />
+              <Bot className="h-4 w-4" aria-hidden />
             </span>
-            Guardian is thinking...
+            Chatbot is thinking...
           </div>
         )}
 
@@ -153,15 +153,15 @@ export function ChatScreen() {
       </div>
 
       {/* Composer */}
-      <div className="border-t border-border bg-card/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="border-t border-border bg-card p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <div className="flex items-center gap-2">
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={onKeyDown}
             disabled={busy}
-            placeholder="Ask Guardian..."
-            aria-label="Ask Guardian a question"
+            placeholder="Ask Chatbot..."
+            aria-label="Ask Chatbot a question"
             className="flex-1 rounded-full border border-input bg-background px-4 py-2.5 text-sm outline-none focus:border-ring focus:ring-2 focus:ring-ring/30 placeholder:text-muted-foreground"
           />
           <button
@@ -192,7 +192,7 @@ function Bubble({ message }: { message: ChatMessage }) {
   return (
     <div className="flex gap-2">
       <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary text-foreground">
-        <Shield className="h-4 w-4" />
+        <Bot className="h-4 w-4" />
       </span>
       <div className="min-w-0 max-w-[85%] space-y-2 rounded-2xl rounded-tl-md border border-border bg-card px-3.5 py-3">
         {/* `matched` is only set on messages written by the old rule engine,

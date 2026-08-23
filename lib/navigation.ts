@@ -37,6 +37,5 @@ export const TOOL_LINKS: NavLink[] = [
   { href: '/compare', label: 'Compare cars', icon: Scale },
   { href: '/documents', label: 'Documents', icon: FileSearch },
   { href: '/insurance', label: 'Insurance', icon: Umbrella },
-  { href: '/rights', label: 'Know your rights', icon: Scale },
   { href: '/support', label: 'Help and tickets', icon: LifeBuoy },
 ]

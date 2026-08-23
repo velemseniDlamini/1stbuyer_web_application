@@ -8,23 +8,53 @@ insurer. It sells nothing and earns no commission.
 
 ## What it does
 
-The app is organised as a seven-stage buying journey:
+The app is organised as a six-stage buying journey:
 
 1. **Know Yourself** - record a bureau credit score and see the interest-rate band it should buy
-2. **Know Your Rights** - CPA and NCA modules, each with a short quiz
-3. **Know the Market** - used listings, brand-new cars, rivals and dealer branches
-4. **Know Your Deal** - instalment, interest, total cost and balloon exposure
-5. **Find Your Car** - save and compare the vehicles you are serious about
-6. **Seal the Deal** - a dealer quotation read line by line against benchmarks
-7. **Protect Your Ride** - indicative insurance comparison
+2. **Know the Market** - used listings, brand-new cars, rivals and dealer branches
+3. **Know Your Deal** - instalment, interest, total cost and balloon exposure
+4. **Find Your Car** - save and compare the vehicles you are serious about
+5. **Seal the Deal** - a dealer quotation read line by line against benchmarks
+6. **Protect Your Ride** - indicative insurance comparison
 
-Plus **Guardian**, an AI assistant that answers questions about cars, credit,
+Plus **Chatbot**, an AI assistant that answers questions about cars, credit,
 finance, quotations, rights and insurance, and refuses everything else. See
 [docs/guardian.md](docs/guardian.md).
 
-A public landing page introduces the product to signed-out visitors, and a
-hidden staff portal carries a support role and a super-admin role with live
-traffic analytics.
+Signed out, the app opens on the login screen. A hidden staff portal carries a
+support role and a super-admin role with live traffic analytics.
+
+## Profile fields: what is locked
+
+Identity and anything that feeds a calculation is fixed once the account is
+created, so a figure cannot be quietly changed after estimates were built on it.
+
+| Locked after sign-up | Editable |
+| --- | --- |
+| First and last name | Province |
+| Date of birth | City or town |
+| Licence issue date | Employment status |
+| | Net monthly income |
+| | Buying goal |
+
+Locked fields are rendered as text with the reason, not as disabled inputs:
+there is no control in the form to re-enable from devtools. Corrections go
+through support, which leaves a record. **Account deletion was removed
+entirely**, UI and store action both, so no code path wipes an account from the
+interface.
+
+## Income is NET, and the thresholds moved with it
+
+The app asks for take-home pay, because that is the figure a buyer actually
+knows. The familiar affordability guideline ("under 20 to 25 percent") is quoted
+against GROSS pay, so applying it unchanged to a net figure would have made
+every verdict wrong in a way that still looked plausible.
+
+Net pay in South Africa is roughly 72% of gross after PAYE and UIF, so the bands
+are scaled by 1 / 0.72: **comfortable under 28%, stretch to 42%, risky above**.
+The old "lenders may decline over 30%" wording is gone, because lenders assess
+gross income and total debt, not this instalment alone. See
+`AFFORDABILITY_BANDS` and `NET_TO_GROSS_ASSUMPTION` in `lib/finance.ts`.
 
 ## The rule the whole codebase is built on
 
@@ -33,8 +63,13 @@ traffic analytics.
 - No instalment, affordability verdict or rate target without a real credit score
 - No specification or price without a named, dated source
 - Anything the app does not hold is shown as "Not listed", never estimated into place
-- Guardian cannot write a citation: it emits a marker that the server resolves
+- Chatbot cannot write a citation: it emits a marker that the server resolves
   against a fixed knowledge base, and unknown ids are deleted
+
+The user-facing "Know Your Rights" screen was removed, but the CPA and NCA
+source material it taught was kept in `lib/legal-references.ts` and is still
+what Chatbot cites. Deleting the corpus would have left it answering legal
+questions from model memory.
 
 `lib/specs.ts` and `lib/reliability.ts` are deliberately empty. No sourced South
 African reliability, service-cost or resale data exists in this project, so the

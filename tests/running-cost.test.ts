@@ -10,7 +10,11 @@ import {
   litresPer100kmFor,
   monthlyFuelCost,
 } from '../lib/running-cost'
-import { assessAffordability } from '../lib/finance'
+import {
+  AFFORDABILITY_BANDS,
+  NET_TO_GROSS_ASSUMPTION,
+  assessAffordability,
+} from '../lib/finance'
 
 const CAR = VEHICLES[0]
 
@@ -117,21 +121,47 @@ describe('running-cost total', () => {
 describe('affordability thresholds match /finance exactly', () => {
   const income = 30000
 
-  it('calls 20% of income comfortable', () => {
-    const verdict = assessAffordability(income * 0.2, income)
+  /*
+   * These bands are measured against NET income. The app asks for take-home
+   * pay, because that is the figure a buyer actually knows, so the familiar
+   * gross guideline of 20-25% was scaled by the stated net-to-gross assumption.
+   * Pinning the boundaries here is what stops someone "tidying" them back to
+   * the gross numbers and quietly making every verdict in the app wrong.
+   */
+  it('uses net-income bands, not the gross ones', () => {
+    assert.equal(AFFORDABILITY_BANDS.comfortable, 0.28)
+    assert.equal(AFFORDABILITY_BANDS.stretch, 0.42)
+    assert.equal(NET_TO_GROSS_ASSUMPTION, 0.72)
+    // The bands must be the gross guideline scaled by the assumption, within
+    // rounding, or the documented reasoning no longer matches the constants.
+    assert.ok(Math.abs(AFFORDABILITY_BANDS.comfortable - 0.2 / NET_TO_GROSS_ASSUMPTION) < 0.01)
+    assert.ok(Math.abs(AFFORDABILITY_BANDS.stretch - 0.3 / NET_TO_GROSS_ASSUMPTION) < 0.02)
+  })
+
+  it('calls the comfortable ceiling comfortable', () => {
+    const verdict = assessAffordability(income * AFFORDABILITY_BANDS.comfortable, income)
     assert.equal(verdict.id, 'comfortable')
     assert.equal(verdict.tone, 'success')
   })
 
-  it('calls just over 20% a stretch', () => {
-    const verdict = assessAffordability(income * 0.2 + 1, income)
+  it('calls just over the comfortable ceiling a stretch', () => {
+    const verdict = assessAffordability(income * AFFORDABILITY_BANDS.comfortable + 1, income)
     assert.equal(verdict.id, 'stretch')
     assert.equal(verdict.tone, 'warning')
   })
 
-  it('calls exactly 30% a stretch and just over 30% risky', () => {
-    assert.equal(assessAffordability(income * 0.3, income).id, 'stretch')
-    assert.equal(assessAffordability(income * 0.3 + 1, income).id, 'risky')
+  it('calls exactly the stretch ceiling a stretch, and just over it risky', () => {
+    assert.equal(assessAffordability(income * AFFORDABILITY_BANDS.stretch, income).id, 'stretch')
+    assert.equal(assessAffordability(income * AFFORDABILITY_BANDS.stretch + 1, income).id, 'risky')
+  })
+
+  it('never claims to predict a lender decision', () => {
+    // The old copy said "lenders may decline over 30%". Lenders assess gross
+    // income and total debt, so this app cannot say that honestly.
+    for (const ratio of [0.1, 0.35, 0.6]) {
+      const note = assessAffordability(income * ratio, income).note.toLowerCase()
+      assert.doesNotMatch(note, /lenders may decline/)
+    }
   })
 
   it('never reports comfortable when income is unknown', () => {
@@ -143,8 +173,8 @@ describe('affordability thresholds match /finance exactly', () => {
   it('carries its meaning in the label, not only the colour', () => {
     for (const [instalment, label] of [
       [income * 0.1, 'Comfortable'],
-      [income * 0.25, 'A stretch'],
-      [income * 0.5, 'Risky'],
+      [income * 0.35, 'A stretch'],
+      [income * 0.6, 'Risky'],
     ] as const) {
       assert.equal(assessAffordability(instalment, income).label, label)
     }

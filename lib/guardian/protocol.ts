@@ -37,14 +37,13 @@ export type PageId =
   | 'documents'
   | 'quotation'
   | 'insurance'
-  | 'rights'
   | 'profile'
   | 'support'
   | 'other'
 
 export const PAGE_IDS: readonly PageId[] = [
   'dashboard', 'journey', 'explore', 'new-cars', 'rivals', 'compare', 'credit',
-  'finance', 'documents', 'quotation', 'insurance', 'rights', 'profile',
+  'finance', 'documents', 'quotation', 'insurance', 'profile',
   'support', 'other',
 ]
 

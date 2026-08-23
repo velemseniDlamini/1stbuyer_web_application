@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useStore, type Profile } from '@/lib/store'
-import { PROVINCES, EMPLOYMENT_STATUSES, BUYING_GOALS } from '@/lib/data'
+import { EMPLOYMENT_STATUSES, BUYING_GOALS } from '@/lib/data'
+import { IncomeField, ProvinceAndCity } from '@/components/profile-fields'
 import { yearsBetween } from '@/lib/format'
 import { Field, inputClass, Notice } from '@/components/ui-kit'
 import { PhoneShell } from '@/components/app-frame'
@@ -41,11 +42,11 @@ export default function OnboardingPage() {
   function validate(): boolean {
     const e: Record<string, string> = {}
     if (!form.firstName.trim()) e.firstName = 'Required.'
-    if (!form.city.trim()) e.city = 'Required.'
+    if (!form.city) e.city = 'Select your city or town.'
     if (!form.province) e.province = 'Select your province.'
     if (!form.employment) e.employment = 'Select your employment status.'
     if (!form.monthlyIncome || form.monthlyIncome < 1000)
-      e.monthlyIncome = 'Enter your gross monthly income (at least R1 000).'
+      e.monthlyIncome = 'Enter your net monthly income (at least R1 000).'
     if (!form.dob) e.dob = 'Required.'
     else {
       const age = yearsBetween(form.dob)
@@ -112,31 +113,13 @@ export default function OnboardingPage() {
             </Field>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="City / town" htmlFor="city" error={errors.city}>
-              <input
-                id="city"
-                className={inputClass}
-                value={form.city}
-                onChange={(e) => set('city', e.target.value)}
-              />
-            </Field>
-            <Field label="Province" htmlFor="province" error={errors.province}>
-              <select
-                id="province"
-                className={inputClass}
-                value={form.province}
-                onChange={(e) => set('province', e.target.value)}
-              >
-                <option value="">Select…</option>
-                {PROVINCES.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
+          <ProvinceAndCity
+            province={form.province}
+            city={form.city}
+            onProvince={(v) => set('province', v)}
+            onCity={(v) => set('city', v)}
+            errors={{ province: errors.province, city: errors.city }}
+          />
 
           <Field label="Employment status" htmlFor="employment" error={errors.employment}>
             <select
@@ -154,28 +137,11 @@ export default function OnboardingPage() {
             </select>
           </Field>
 
-          <Field
-            label="Gross monthly income"
-            htmlFor="income"
+          <IncomeField
+            value={form.monthlyIncome}
+            onChange={(v) => set('monthlyIncome', v)}
             error={errors.monthlyIncome}
-            hint="Before deductions. Used only to judge affordability."
-          >
-            <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                R
-              </span>
-              <input
-                id="income"
-                type="number"
-                inputMode="numeric"
-                min={0}
-                className={`${inputClass} pl-7`}
-                value={form.monthlyIncome || ''}
-                onChange={(e) => set('monthlyIncome', Number(e.target.value))}
-              />
-            </div>
-          </Field>
-
+          />
           <div className="grid grid-cols-2 gap-3">
             <Field label="Date of birth" htmlFor="dob" error={errors.dob}>
               <input

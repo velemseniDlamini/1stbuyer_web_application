@@ -1,8 +1,17 @@
-# Guardian
+# Chatbot (internally: guardian/*)
 
-Guardian is the AI assistant built into 1st Buyer. It answers questions about
-cars, credit, finance, dealer quotations, South African consumer rights,
-insurance and the app's own tools, and it refuses everything else.
+Chatbot is the AI assistant built into 1st Buyer.
+
+**Naming:** the assistant is called "Chatbot" to the user. Every module, file
+and the API route are still named `guardian/*`. Renaming twenty-odd files and
+an endpoint carries real risk and changes nothing anyone using the app can see,
+so the user-facing name lives in one constant, `GUARDIAN_IDENTITY` in
+`lib/guardian/system-prompt.ts`. Change it there and the whole interface
+follows.
+
+It answers questions about cars, credit, finance, dealer quotations, South
+African consumer rights, insurance and the app's own tools, and it refuses
+everything else.
 
 It is not a general chatbot with a car-shaped prompt. The design goal was that
 Guardian should be unable to invent a price, a specification, a credit score or
@@ -43,8 +52,8 @@ to change a fact.
 | Layer | File | What belongs in it |
 | --- | --- | --- |
 | System rules | `lib/guardian/system-prompt.ts` | Who Guardian is, scope, refusals, safety, tone. **Rules only, no facts.** |
-| Application knowledge | `lib/guardian/app-knowledge.ts` | The seven stages, what each screen does, which routes exist. Derived from `lib/journey.ts` and `lib/navigation.ts`, so it cannot drift. |
-| Domain knowledge | `lib/guardian/knowledge.ts` | Credit, finance, quotation, insurance and rights content, each with a citation. Derived from `lib/rights.ts`, `lib/finance.ts`, `lib/insurance.ts` and `lib/quotation.ts`. |
+| Application knowledge | `lib/guardian/app-knowledge.ts` | The journey stages, what each screen does, which routes exist. Derived from `lib/journey.ts` and `lib/navigation.ts`, so it cannot drift. |
+| Domain knowledge | `lib/guardian/knowledge.ts` | Credit, finance, quotation, insurance and rights content, each with a citation. Derived from `lib/legal-references.ts`, `lib/finance.ts`, `lib/insurance.ts` and `lib/quotation.ts`. |
 | Live context | `lib/guardian/use-guardian-context.ts` and the tools | Where the user is, what they are looking at, their own recorded figures. |
 
 ### Adding knowledge
@@ -63,8 +72,9 @@ Add an entry to `CURATED` in `lib/guardian/knowledge.ts`:
 }
 ```
 
-Rights entries need no work: they are generated from `RIGHTS_MODULES`, so
-adding a module to the Rights screen teaches Guardian at the same time.
+Legal entries are generated from `lib/legal-references.ts`. The user-facing
+Rights screen was removed; that file is where its CPA and NCA source material
+now lives, and it is still the only thing Chatbot may cite on the law.
 
 There is no vector database. The corpus is about a dozen entries and keyword
 scoring over it is auditable, whereas an embedding service would add a

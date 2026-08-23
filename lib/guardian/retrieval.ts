@@ -29,7 +29,6 @@ const PAGE_TOPICS: Record<PageId, KnowledgeTopic[]> = {
   documents: ['quotation'],
   quotation: ['quotation', 'finance'],
   insurance: ['insurance'],
-  rights: ['rights'],
   profile: ['app'],
   support: ['app'],
   other: ['app'],
