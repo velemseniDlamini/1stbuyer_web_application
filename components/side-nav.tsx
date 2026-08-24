@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { PRIMARY_TABS, TOOL_LINKS } from '@/lib/navigation'
 import { BrandMark } from './screen-header'
-import { Shield } from 'lucide-react'
+import { Home } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
@@ -41,18 +41,10 @@ export function SideNav() {
         </ul>
       </nav>
 
-      <div className="border-t border-border p-3">
-        <Link
-          href="/chat"
-          className={cn(
-            'flex min-h-11 items-center gap-3 rounded-xl bg-primary px-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90',
-            pathname === '/chat' && 'ring-2 ring-ring ring-offset-2 ring-offset-background',
-          )}
-        >
-          <Shield className="h-4 w-4" aria-hidden />
-          Ask Chatbot
-        </Link>
-      </div>
+      {/* The sidebar used to end with an "Ask Chatbot" button here. It was a
+          second entry point to the same assistant, sitting in the bottom-left
+          corner where the floating launcher already is, and it still carried
+          the old shield icon after the rebrand. One way in is enough. */}
     </aside>
   )
 }
@@ -65,7 +57,7 @@ function NavRow({
 }: {
   href: string
   label: string
-  icon: typeof Shield
+  icon: typeof Home
   active: boolean
 }) {
   return (
